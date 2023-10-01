@@ -17,10 +17,10 @@ class operation extends Model
         'lo',
         'DS',
         'DO',
+        'md',
+        'mr',
+        'DD',
         'ntj',
-        'trs',
-        'mds',
-        'mtrp',
         'mtva',
         'mtrp-ttc',
     ];

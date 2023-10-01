@@ -10,17 +10,40 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use App\Models\bat;
 use App\Models\operation;
+use App\Models\user;
 use App\Models\ordres_arret;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class ProfileController extends Controller
 {
     public function dashboard(){
         $bats = bat::all();
-        return view('dashboard',compact('bats'));
+        $users = user::all();
+        $operations = operation::all();
+        return view('dashboard',compact('bats','users','operations'));
     }
 
-    public function imprimer(){
-        return view('imprimer');
+    public function imprimer($id){
+        $operation = Operation::where('id','=',$id)->first();
+        $bats = bat::all();
+        $arrets = ordres_arret::where('id_operation','=',$id)->get();
+        return view('imprimer',compact('operation','bats','arrets'));
+    }
+    public function supprimer($id){
+        return back()->with('success', 'Suppression Avec Succes.');
+    }
+    public function suspendre($id){
+        return back()->with('success', 'Suspendu Avec Succes.');
+    }
+    public function userProfile($id){
+        $user = user::where('id','=',$id)->first();
+        $operations = operation::where('id_user','=',$user->id)->get();
+        $arrets = array();
+        for ($i=0; $i<count($operations); $i++){
+            $a = ordres_arret::where('id_operation','=',$operations[$i])->get();
+            array_push($arrets,$a);
+        }
+        return view('profile',compact('user','operations','arrets'));
     }
 
     public function envoyer(Request $request){
@@ -32,24 +55,56 @@ class ProfileController extends Controller
             'lo' => $request->input('lo'),
             'DS' => $request->input('ds'),
             'DO' => $request->input('dateOuverture'),
+            'DD' => $request->input('dd'),
             'ntj' => $request->input('inputNTJ'),
-            'trs' => $request->input('trs'),
-            'mds' => $request->input('mds'),
-            'mtrp' => $request->input('mtrp'),
+            'md' => $request->input('md'),
+            'mr' => $request->input('mr'),
             'mtva' => $request->input('mtva'),
             'mtrp-ttc' => $request->input('mtrp-ttc'),
         ]);
-        $listreferences = explode("|", $request->listreferences);
-        for ($i=0;$i<count($listreferences);$i++){
-            $deuxdates = explode("/",$listreferences[$i]);
-            ordres_arret::create([
-                'id_operation' => $operation->id,
-                'OA' => $deuxdates[0],
-                'OR' => $deuxdates[1],
-            ]);
+        if (!empty($request->listreferences)){
+           $listreferences = explode("|", $request->listreferences);
+            for ($i=0;$i<count($listreferences);$i++){
+                $deuxdates = explode("/",$listreferences[$i]);
+                ordres_arret::create([
+                    'id_operation' => $operation->id,
+                    'OA' => $deuxdates[0],
+                    'OR' => $deuxdates[1],
+                ]);
+            } 
         }
+        
         return back()->with('success', 'Operation created successfully.');
     }
+
+
+
+    public function upload(Request $request)
+    {
+        $request->validate([
+            'excel_file' => 'required|mimes:xls,xlsx',
+        ]);
+    
+        $file = $request->file('excel_file');
+    
+        try {
+            $spreadsheet = IOFactory::load($file);
+            $worksheet = $spreadsheet->getActiveSheet();
+            $data = $worksheet->toArray(null, true, true, true);
+    
+            foreach ($data as $row) {
+                Bat::create([
+                    'DO' => $row['B'],
+                    'btp' => $row['C'],
+                    'i0' => $row['D'],
+                ]);
+            }
+            return back()->with('success', 'Data uploaded and inserted successfully.');
+        } catch (\Exception $e) {
+            return back()->with('fail', 'Something went wrong');
+        }
+    }
+    
 
     /**
      * Display the user's profile form.

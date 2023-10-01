@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Message Template with Bootstrap</title>
+    <!-- Add Bootstrap CSS and JavaScript links -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <p>Commune Asni</p>
+        <p class="text-center ">
+            <strong>Note de Calcul : relative à la révision des prix</strong><br>
+            traveaux d'amenagements de l'assainissement liquide de l'abattoir communal, marche num : {{ $operation->numMarche }}
+        </p>
+        <div class="row">
+            <div class="col-md-6">
+                Date d'ouverture des plis : {{ $operation->DS }}
+            </div>
+            <div class="col-md-6">
+                Délai d'exécution : {{ $operation->ntj }} Jours
+            </div>
+        </div>
+        <div class="row text-center">
+            <p class="col-md-5">
+                Index de base BAT6 0 : 210,50
+            </p>
+                <table class="table col-md-7 border border-top">
+                <style>
+                    .empty-cell {
+                        border:1px solid black ;
+                        background-color: #f5f5f5; /* Light gray background color */
+                        text-align: center; /* Center align text in cells */
+                        padding: 5px; /* Add some padding for spacing */
+                    }
+                </style>
+                <tbody>
+                    <tr>
+                        <td class="empty-cell"></td>
+                        <td class="empty-cell"></td>
+                    </tr>
+                    <tr>
+                        <td class="empty-cell"></td>
+                        <td class="empty-cell"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row text-center">
+            <div class="col-md-5">Date de traveaux : {{ $operation->DO }}</div>
+            <div class="col-md-7">Formule de révision : P=P0*[0,15+0,58,BAT6/BAT6 0]</div>
+        </div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                <th colspan="2">Décomptes</th>
+                <th colspan="8">Répartition délai d'exécution</th>
+                <th colspan="2">Répartition montant</th>
+                <th colspan="3">Révision des prix</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">Num</th>
+                    <td>Dates</td>
+                    <td>mois</td>
+                    <td>BAT6</td>
+                    <td colspan="3">période</td>
+                    <td>Nbr Jours</td>
+                    <td>Montant travaux HT</td>
+                    <td>Déduction</td>
+                    <td>Montant total</td>
+                    <td>Montant à réviser</td>
+                    <td>P/PO</td>
+                    <td>Coef</td>
+                    <td>Montant révision</td>
+                </tr>
+                <tr>
+                    <th rowspan="6">DP N^1</th>
+                    <td rowspan="6">01/02/2021</td>
+                </tr>
+                <tr>
+                    <td>Nov-20</td>
+                    <td>209.5</td>
+                    <td>25</td>
+                    <td>au</td>
+                    <td>30</td>
+                    <td>6</td>
+                    <td rowspan="6">93 859,54</td>
+                    <td rowspan="6"></td>
+                    <td rowspan="6">93 859,54</td>
+                    <td>8000,54</td>
+                    <td>0.99756348</td>
+                    <td>-0.00045</td>
+                    <td>-0.00045</td>
+                </tr>
+                <tr>
+                    <td>Dec-20</td>
+                    <td>209.5</td>
+                    <td>25</td>
+                    <td>au</td>
+                    <td>30</td>
+                    <td>6</td>
+                    <td >8000,54</td>
+                    <td>0.99756348</td>
+                    <td>-0.00045</td>
+                    <td>-0.00045</td>
+                </tr>
+                <tr>
+                    <td>Janv-20</td>
+                    <td>209.5</td>
+                    <td>25</td>
+                    <td>au</td>
+                    <td>30</td>
+                    <td>6</td>
+                    <td >8000,54</td>
+                    <td>0.99756348</td>
+                    <td>-0.00045</td>
+                    <td>-0.00045</td>
+                </tr>
+                <tr>
+                    <td>Févr-20</td>
+                    <td>209.5</td>
+                    <td>25</td>
+                    <td>au</td>
+                    <td>30</td>
+                    <td>6</td>
+                    <td >8000,54</td>
+                    <td>0.99756348</td>
+                    <td>-0.00045</td>
+                    <td>-0.00045</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td colspan="4">Nombre total de jours</td>
+                    <td>6</td>
+                    <th class="fw-bold">8000,54</th>
+                    <td colspan="2">Total 2</td>
+                    <td>7538</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="row m-0 p-0">
+            <div class="col-2"></div>
+            <div class="col-3">
+                <table class="table  m-0 p-0 border border-top">
+                    <tbody>
+                       <tr>
+                            <td colspan="3">Nombre Total de jours : </td>
+                            <td>69</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-1"></div>
+            <div class="col-2"></div>
+            <div class="col-1"></div>
+            <div class="col-3">
+                <table class="table border border-top">
+                    <tbody>
+                       <tr>
+                            <td>Total HT : </td>
+                            <td>570.45</td>
+                        </tr>
+                        <tr>
+                            <td>Total HT : </td>
+                            <td>570.45</td>
+                        </tr>
+                        <tr>
+                            <td>Total HT : </td>
+                            <td>570.45</td>
+                        </tr> 
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="container">
+        <?php
+        function convertirEnLettres($montant) {
+            $unites = array('', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf');
+            $dizaines = array('', 'dix', 'vingt', 'trente', 'quarante', 'cinquante', 'soixante', 'soixante-dix', 'quatre-vingt', 'quatre-vingt-dix');
+            
+            // Séparation des dirhams et des centimes
+            $dirhams = intval($montant);
+            $centimes = round(($montant - $dirhams) * 100);
+            
+            // Conversion des dirhams en lettres
+            $dirhamsEnLettres = "";
+            
+            if ($dirhams >= 1000) {
+                $dirhamsEnLettres .= $unites[substr($dirhams, 0, 1)] . ' mille ';
+                $dirhams %= 1000;
+            }
+            
+            if ($dirhams >= 100) {
+                $dirhamsEnLettres .= $unites[substr($dirhams, 0, 1)] . ' cent ';
+                $dirhams %= 100;
+            }
+            
+            if ($dirhams >= 10 && $dirhams <= 99) {
+                $dirhamsEnLettres .= $dizaines[substr($dirhams, 0, 1)];
+                if ($dirhams % 10 != 0) {
+                    $dirhamsEnLettres .= '-';
+                    $dirhamsEnLettres .= $unites[substr($dirhams, 1, 1)];
+                }
+            } elseif ($dirhams >= 1 && $dirhams <= 9) {
+                $dirhamsEnLettres .= $unites[$dirhams];
+            }
+            
+            // Ajout du mot "dirhams" et conversion des centimes
+            $dirhamsEnLettres .= ' dirhams ';
+            
+            if ($centimes > 0) {
+                $dirhamsEnLettres .= 'et ';
+                
+                if ($centimes >= 10) {
+                    $dirhamsEnLettres .= $dizaines[substr($centimes, 0, 1)];
+                    if ($centimes % 10 != 0) {
+                        $dirhamsEnLettres .= '-';
+                        $dirhamsEnLettres .= $unites[substr($centimes, 1, 1)];
+                    }
+                } elseif ($centimes >= 1 && $centimes <= 9) {
+                    $dirhamsEnLettres .= $unites[$centimes];
+                }
+                
+                $dirhamsEnLettres .= ' centime';
+                if ($centimes > 1) {
+                    $dirhamsEnLettres .= 's';
+                }
+            }
+            
+            return $dirhamsEnLettres;
+        }
+
+        $montant = 23.21;
+        
+        ?>
+            <div class="row text-center">
+                <div class="col-4">Arrété la personne note à la somme de : </div>
+                <div class="col-5"><?php echo convertirEnLettres($montant); ?> .</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Bootstrap JS (optional) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+for($i=0; $i<count($arrets); $i++) {
+echo '<tr>';
+echo '<td>'.formatDate(trim($arrets[$i]["OA"])).'</td>';
+echo '<td>'.retourneI0(trim($arrets[$i]["OA"]),$bats).'</td>';
+echo '<td>'.getDayFromDate(trim($arrets[$i]["OA"])).'</td>';
+echo '<td>au</td>';
+echo '<td>'.getDayFromDate(trim($arrets[$i]["OR"])).'</td>';
+$nbrTJ += getDayFromDate(trim($arrets[$i]["OR"])) - getDayFromDate(trim($arrets[$i]["OA"])) + 1 ;
+echo '<td>' . (getDayFromDate(trim($arrets[$i]["OR"])) - getDayFromDate(trim($arrets[$i]["OA"])) + 1) . '</td>';
+if ($i==0){
+    echo '<td rowspan="6">93 859,54</td>';
+    echo '<td rowspan="6"></td>';
+    echo '<td rowspan="6">93 859,54</td>';
+}
+echo '<td>8000,54</td>';
+echo '<td>0.99756348</td>';
+echo '<td>-0.00045</td>';
+echo '<td>-0.00045</td>';
+echo '</tr>';
+}
+
+
+
+echo '<tr>';
+echo '<td>'.formatDate(trim($interval['startDate'])).'</td>';
+echo '<td>'.retourneI0(trim($interval['startDate']),$bats).'</td>';
+echo '<td>'.getDayFromDate(trim($interval['startDate'])).'</td>';
+echo '<td>au</td>';
+echo '<td>'.getDayFromDate(trim($interval['endDate'])).'</td>';
+$nbrTJ += getDayFromDate(trim($interval['endDate'])) - getDayFromDate(trim($interval['startDate'])) + 1 ;
+echo '<td>' . (getDayFromDate(trim($interval['endDate'])) - getDayFromDate(trim($interval['startDate'])) + 1) . '</td>';
+if ($i==0){
+    echo '<td rowspan="6">93 859,54</td>';
+    echo '<td rowspan="6"></td>';
+    echo '<td rowspan="6">93 859,54</td>';
+}
+echo '<td>8000,54</td>';
+echo '<td>0.99756348</td>';
+echo '<td>-0.00045</td>';
+echo '<td>-0.00045</td>';
+echo '</tr>';

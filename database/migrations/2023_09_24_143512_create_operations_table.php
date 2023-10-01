@@ -18,12 +18,12 @@ return new class extends Migration
             $table->string('nomMarche');
             $table->string('numMarche');
             $table->string('lo');
+            $table->string('md');
             $table->string('DS');
             $table->string('DO');
+            $table->string('DD');
             $table->string('ntj');
-            $table->string('trs');
-            $table->string('mds');
-            $table->string('mtrp');
+            $table->string('mr');
             $table->string('mtva');
             $table->string('mtrp-ttc');
             $table->timestamps();

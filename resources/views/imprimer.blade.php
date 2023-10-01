@@ -6,23 +6,174 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
+
+<?php 
+$interruptions = []; // Initialize an empty array to store interruptions
+foreach ($arrets as $a) {
+    $interruptions[] = [$a->OA, $a->OR]; // Append the interruption as an array
+}
+function monthsAndIntervalsBetweenDatesWithoutInterruptions($dateA, $dateB, $interruptions) {
+    $startDate = new DateTime($dateA);
+    $endDate = new DateTime($dateB);
+    $months = [];
+
+    foreach ($interruptions as $interruption) {
+        $interruptionStart = new DateTime($interruption[0]);
+        $interruptionEnd = new DateTime($interruption[1]);
+
+        while ($startDate <= $endDate) {
+            $monthName = $startDate->format('M-y');
+            $year = $startDate->format('Y');
+            $monthStart = clone $startDate;
+            $monthEnd = clone $startDate;
+            $monthEnd->modify('last day of this month');
+
+            if ($monthEnd > $endDate) {
+                $monthEnd = clone $endDate;
+            }
+
+            if ($interruptionStart <= $monthEnd && $interruptionEnd >= $monthStart) {
+                if ($interruptionStart > $monthStart) {
+                    $months[] = [
+                        'month' => $monthName,
+                        'year' => $year,
+                        'startDate' => $monthStart->format('d-m-Y'),
+                        'endDate' => $interruptionStart->modify('-1 day')->format('d-m-Y'),
+                    ];
+                }
+
+                $startDate = clone $interruptionEnd;
+                $startDate->modify('+1 day');
+                break; // Move to the next interruption or month
+            }
+
+            $interval = [
+                'month' => $monthName,
+                'year' => $year,
+                'startDate' => $monthStart->format('d-m-Y'),
+                'endDate' => $monthEnd->format('d-m-Y'),
+            ];
+            $months[] = $interval;
+
+            if ($monthEnd < $endDate) {
+                $startDate->modify('first day of next month');
+            } else {
+                $months[] = [
+                    'month' => $monthName,
+                    'year' => $year,
+                    'startDate' => $monthStart->format('d-m-Y'),
+                    'endDate' => $monthEnd->format('d-m-Y'),
+                ];
+                return $months;
+            }
+        }
+    }
+
+    // Add remaining months after interruptions
+    while ($startDate <= $endDate) {
+        $monthName = $startDate->format('M-y');
+        $year = $startDate->format('Y');
+        $monthStart = clone $startDate;
+        $monthEnd = clone $startDate;
+        $monthEnd->modify('last day of this month');
+
+        if ($monthEnd > $endDate) {
+            $monthEnd = clone $endDate;
+        }
+
+        $interval = [
+            'month' => $monthName,
+            'year' => $year,
+            'startDate' => $monthStart->format('d-m-Y'),
+            'endDate' => $monthEnd->format('d-m-Y'),
+        ];
+        $months[] = $interval;
+
+        if ($monthEnd < $endDate) {
+            $startDate->modify('first day of next month');
+        } else {
+            return $months;
+        }
+    }
+
+    return $months;
+}
+
+
+
+
+
+
+
+
+
+
+
+// Example usage:
+// $dateA = '2023-01-11'; // Start date
+// $dateB = '2023-06-08'; // End date
+
+// $interruptions = [
+//     ['2023-01-20', '2023-02-05'], // Example interruption 1
+//     ['2023-03-10', '2023-03-20'], // Example interruption 2
+// ];
+
+// $intervals = monthsAndIntervalsBetweenDatesWithoutInterruptions($dateA, $dateB, $interruptions);
+
+// // Display the intervals for each month without interruptions
+// foreach ($intervals as $interval) {
+//     echo $interval['month'] . ' : ' . $interval['startDate'] . ' to ' . $interval['endDate'] . PHP_EOL;
+// }
+
+
+?>
+    @php
+        for($i = 0; $i < count($bats); $i++) {
+            if ($bats[$i]['id']==$operation->id){
+                $bat = $bats[$i] ;
+            }
+        }
+    @endphp
     <div class="container mt-5">
-        <p>Commune Asni</p>
+        <div class="row">
+            <div class="col-10"><p>Commune Asni</p></div>
+            <div class="col-2"><button class="btn btn-success" id="btnImprimer" onclick="imprimer()">Imprimer</button></div>
+        </div>
+        <style>
+            @media print {
+                body {
+                    margin: 0;
+                }
+                table {
+                    width: 100%;
+                }
+            }
+        </style>
+        <script>
+            function imprimer(){
+                document.getElementById('btnImprimer').style.display = 'none';
+                window.print();
+            }
+        </script>
         <p class="text-center ">
             <strong>Note de Calcul : relative à la révision des prix</strong><br>
-            traveaux d'amenagements de l'assainissement liquide de l'abattoir communal, marche num : 03/2020
+            traveaux d'amenagements de l'assainissement liquide de l'abattoir communal, marche num : {{ $operation->numMarche }}
         </p>
         <div class="row">
             <div class="col-md-6">
-                Date d'ouverture des plis : 17/08/2020
+                Date d'ouverture des plis : {{ $operation->DO }}
             </div>
             <div class="col-md-6">
-                Délai d'exécution : 2 mois
+                Délai d'exécution : {{ $operation->ntj }} Jours
             </div>
         </div>
-        <div class="row text-center">
-            <p class="col-md-5">
-                Index de base BAT6 0 : 210,50
+        <div class="row">
+            <p class="col-md-5">Index de base
+                @foreach ($bats as $bat)
+                    @if ($bat->id == $operation->id_bat)
+                         {{$bat->btp}} : {{$bat->i0}}</p>
+                    @endif
+                @endforeach
             </p>
                 <table class="table col-md-7 border border-top">
                 <style>
@@ -46,7 +197,7 @@
             </table>
         </div>
         <div class="row text-center">
-            <div class="col-md-5">Date de traveaux : 25/11/2020</div>
+            <div class="col-md-5">Date de traveaux : {{ $operation->DO }}</div>
             <div class="col-md-7">Formule de révision : P=P0*[0,15+0,58,BAT6/BAT6 0]</div>
         </div>
         <table class="table table-bordered">
@@ -65,7 +216,7 @@
                     <td>mois</td>
                     <td>BAT6</td>
                     <td colspan="3">période</td>
-                    <td>NBR Jours</td>
+                    <td>Nbr Jours</td>
                     <td>Montant travaux HT</td>
                     <td>Déduction</td>
                     <td>Montant total</td>
@@ -78,22 +229,110 @@
                     <th rowspan="6">DP N^1</th>
                     <td rowspan="6">01/02/2021</td>
                 </tr>
-                <tr>
-                    <td>Nov-20</td>
-                    <td>209.5</td>
-                    <td>25</td>
-                    <td>au</td>
-                    <td>30</td>
-                    <td>6</td>
-                    <td rowspan="6">93 859,54</td>
-                    <td rowspan="6"></td>
-                    <td rowspan="6">93 859,54</td>
-                    <td>8000,54</td>
-                    <td>0.99756348</td>
-                    <td>-0.00045</td>
-                    <td>-0.00045</td>
-                </tr>
-                <tr>
+                <?php
+                    function retourneI0($date,$bats) {
+                        $dateParts = explode('-', $date);
+                        if (count($dateParts) === 3) {
+                            $month = $dateParts[0];
+                            $year = $dateParts[1];
+                            $DO = $year . '-' . $month;
+                        }
+                        $index = 0;
+                        foreach ($bats as $bat) {
+                            $dateParts = explode('-', $bat['DO']);
+                            if (count($dateParts) === 3) {
+                                $month = $dateParts[0];
+                                $year = $dateParts[1];
+                                $newDO = $year . '-' . $month;
+                                if ($newDO === $DO) {
+                                    return $bat['i0'];
+                                }
+                            }
+                        }
+                        return 'N existe Pas ! ';
+                    }
+                    function formatDate($inputDate) {
+                        $dateTime = DateTime::createFromFormat('Y-m-d', $inputDate);
+                        if ($dateTime === false) {
+                            return $inputDate;
+                        }
+                        return $dateTime->format('M-y');
+                    }
+                    function getDayFromDate($inputDate) {
+                        $dateTime = DateTime::createFromFormat('Y-m-d', $inputDate);
+                        if ($dateTime === false) {
+                            return 'Invalid Date';
+                        }
+                        return $dateTime->format('d');
+                    }
+                    $nbrTJ = 0 ;
+                    $intervals = monthsAndIntervalsBetweenDatesWithoutInterruptions($operation->DO, $operation->DD, $interruptions);
+                    function transformDateFormat($dateStr) {
+                        $timestamp = strtotime($dateStr);
+                        if ($timestamp === false) {
+                            return false; 
+                        }
+                        $transformedDate = date("Y-m-d", $timestamp);
+                        return $transformedDate;
+                    }
+                    $i=0;
+                    $ntj = 0 ;
+                    $tmr = 0 ;
+                    $total1 = 0 ;
+                    function calculatePtoP0($b1,$b2) {
+                        if ($b1 != 0) {
+                            $result = 0.15 + 0.58 * $b1 / $b2;
+                            return $result;
+                        } else {
+                            return null; 
+                        }
+                    }
+                    function transformDate($inputDate) {
+                        $inputYear = date("Y"); // Get the current year
+                        $monthMap = [
+                            'Jan' => '01',
+                            'Feb' => '02',
+                            'Mar' => '03',
+                            'Apr' => '04',
+                            'May' => '05',
+                            'Jun' => '06',
+                            'Jul' => '07',
+                            'Aug' => '08',
+                            'Sep' => '09',
+                            'Oct' => '10',
+                            'Nov' => '11',
+                            'Dec' => '12'
+                        ];
+                        list($monthStr, $day) = explode('-', $inputDate);
+                        $month = $monthMap[$monthStr];
+                        $transformedDate = $inputYear . '-' . $month . '-01';
+                        return $transformedDate;
+                    }
+                    foreach ($intervals as $interval) {
+                        echo '<tr>';
+                        echo '<td>'.$interval['month'].'</td>';
+                        echo '<td>'.retourneI0(trim(transformDateFormat($interval['startDate'])),$bats).'</td>';
+                        echo '<td>'.getDayFromDate(trim(transformDateFormat($interval['startDate']))).'</td>';
+                        echo '<td>au</td>';
+                        echo '<td>'.getDayFromDate(trim(transformDateFormat($interval['endDate']))).'</td>';
+                        $ntj += getDayFromDate(trim(transformDateFormat($interval['endDate']))) - getDayFromDate(trim(transformDateFormat($interval['startDate']))) + 1;
+                        echo '<td>' . (getDayFromDate(trim(transformDateFormat($interval['endDate']))) - getDayFromDate(trim(transformDateFormat($interval['startDate']))) + 1) . '</td>';
+                        if ($i==0){
+                            echo '<td rowspan="6">'.$operation->md.'</td>';
+                            echo '<td rowspan="6"></td>';
+                            echo '<td rowspan="6">'.$operation->md.'</td>';
+                        }
+                        $tmr += ($operation->md / $ntj)*(getDayFromDate(trim(transformDateFormat($interval['endDate']))) - getDayFromDate(trim(transformDateFormat($interval['startDate']))) + 1);
+                        echo '<td>'.($operation->md / $ntj)*(getDayFromDate(trim(transformDateFormat($interval['endDate']))) - getDayFromDate(trim(transformDateFormat($interval['startDate']))) + 1).'</td>';
+                        echo '<td>'.calculatePtoP0(retourneI0(trim(transformDateFormat(transformDate($interval['month']))),$bats),retourneI0(trim(transformDateFormat($interval['startDate'])),$bats)).'</td>';
+                        echo '<td>'.calculatePtoP0(retourneI0(trim(transformDateFormat(transformDate($interval['month']))),$bats),retourneI0(trim(transformDateFormat($interval['startDate'])),$bats))-1 .'</td>';
+                        echo '<td>'.(($operation->md / $ntj)*(getDayFromDate(trim(transformDateFormat($interval['endDate']))) - getDayFromDate(trim(transformDateFormat($interval['startDate']))) + 1)) * (calculatePtoP0(retourneI0(trim(transformDateFormat(transformDate($interval['month']))),$bats),retourneI0(trim(transformDateFormat($interval['startDate'])),$bats))-1).'</td>';
+                        $total1 += (($operation->md / $ntj)*(getDayFromDate(trim(transformDateFormat($interval['endDate']))) - getDayFromDate(trim(transformDateFormat($interval['startDate']))) + 1)) * (calculatePtoP0(retourneI0(trim(transformDateFormat(transformDate($interval['month']))),$bats),retourneI0(trim(transformDateFormat($interval['startDate'])),$bats))-1);
+                        $i++;
+                        echo '</tr>';
+                    }
+                ?>
+                <!-- <tr>
                     <td>Dec-20</td>
                     <td>209.5</td>
                     <td>25</td>
@@ -128,17 +367,116 @@
                     <td>0.99756348</td>
                     <td>-0.00045</td>
                     <td>-0.00045</td>
-                </tr>
+                </tr> -->
                 <tr>
                     <td></td>
                     <td colspan="4">Nombre total de jours</td>
-                    <td>6</td>
-                    <th class="fw-bold">8000,54</th>
-                    <td colspan="2">Total 2</td>
-                    <td>7538</td>
+                    <td>{{ $ntj }}</td>
+                    <th class="fw-bold">{{ $tmr }}</th>
+                    <td colspan="2">Total 1</td>
+                    <td>{{$total1}}</td>
                 </tr>
             </tbody>
         </table>
+        <div class="row m-0 p-0">
+            <div class="col-2"></div>
+            <div class="col-3">
+                <table class="table  m-0 p-0 border border-top">
+                    <tbody>
+                       <tr>
+                            <td colspan="3">Nombre Total de jours : </td>
+                            <td>{{$ntj}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-1"></div>
+            <div class="col-2"></div>
+            <div class="col-1"></div>
+            <div class="col-3">
+                <table class="table border border-top">
+                    <tbody>
+                       <tr>
+                            <td>Total HT : </td>
+                            <td>{{$total1}}</td>
+                        </tr>
+                        <tr>
+                            <td>TVA : </td>
+                            <td>{{$total1*0.2}}</td>
+                        </tr>
+                        <tr>
+                            <td>TG TTC : </td>
+                            <td>{{$total1*1.2}}</td>
+                        </tr> 
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="container">
+        <?php
+        function convertirEnLettres($montant) {
+            $unites = array('', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf');
+            $dizaines = array('', 'dix', 'vingt', 'trente', 'quarante', 'cinquante', 'soixante', 'soixante-dix', 'quatre-vingt', 'quatre-vingt-dix');
+        
+            // Handle negative numbers
+            $isNegative = false;
+            if ($montant < 0) {
+                $isNegative = true;
+                $montant = abs($montant);
+            }
+        
+            $dirhams = intval($montant);
+            $centimes = round(($montant - $dirhams) * 100);
+        
+            $dirhamsEnLettres = "";
+        
+            // Add "moins" for negative numbers
+            if ($isNegative) {
+                $dirhamsEnLettres .= 'moins ';
+            }
+        
+            if ($dirhams >= 1000) {
+                $dirhamsEnLettres .= $unites[substr($dirhams, 0, 1)] . ' mille ';
+                $dirhams %= 1000;
+            }
+            if ($dirhams >= 100) {
+                $dirhamsEnLettres .= $unites[substr($dirhams, 0, 1)] . ' cent ';
+                $dirhams %= 100;
+            }
+            if ($dirhams >= 10 && $dirhams <= 99) {
+                $dirhamsEnLettres .= $dizaines[substr($dirhams, 0, 1)];
+                if ($dirhams % 10 != 0) {
+                    $dirhamsEnLettres .= '-';
+                    $dirhamsEnLettres .= $unites[substr($dirhams, 1, 1)];
+                }
+            } elseif ($dirhams >= 1 && $dirhams <= 9) {
+                $dirhamsEnLettres .= $unites[$dirhams];
+            }
+            $dirhamsEnLettres .= ' dirhams ';
+            if ($centimes > 0) {
+                $dirhamsEnLettres .= 'et ';
+                if ($centimes >= 10) {
+                    $dirhamsEnLettres .= $dizaines[substr($centimes, 0, 1)];
+                    if ($centimes % 10 != 0) {
+                        $dirhamsEnLettres .= '-';
+                        $dirhamsEnLettres .= $unites[substr($centimes, 1, 1)];
+                    }
+                } elseif ($centimes >= 1 && $centimes <= 9) {
+                    $dirhamsEnLettres .= $unites[$centimes];
+                }
+                $dirhamsEnLettres .= ' centime';
+                if ($centimes > 1) {
+                    $dirhamsEnLettres .= 's';
+                }
+            }
+            return $dirhamsEnLettres;
+        }
+        ?>
+            <div class="row text-center">
+                <div class="col-4">Arrété la personne note à la somme de : </div>
+                <div class="col-5"><?php echo convertirEnLettres($total1); ?> .</div>
+            </div>
+        </div>
     </div>
 
     <!-- Add Bootstrap JS (optional) -->
