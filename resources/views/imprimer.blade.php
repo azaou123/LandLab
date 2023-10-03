@@ -279,14 +279,18 @@ function monthsAndIntervalsBetweenDatesWithoutInterruptions($dateA, $dateB, $int
                     $ntj = 0 ;
                     $tmr = 0 ;
                     $total1 = 0 ;
-                    function calculatePtoP0($b1,$b2) {
+                    function calculatePtoP0($b1, $b2) {
+                        $b1 = floatval($b1); // Convertir $b1 en float
+                        $b2 = floatval($b2); // Convertir $b2 en float
+
                         if ($b1 != 0) {
                             $result = 0.15 + 0.58 * $b1 / $b2;
                             return $result;
                         } else {
-                            return null; 
+                            return null;
                         }
                     }
+
                     function transformDate($inputDate) {
                         $inputYear = date("Y"); // Get the current year
                         $monthMap = [

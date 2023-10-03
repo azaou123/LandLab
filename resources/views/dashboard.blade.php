@@ -14,6 +14,11 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 	<link rel="stylesheet" href="{{URL('css/profile.css')}}">
 	<title>Land Lab </title>
+	<style>
+		table{
+			background-color:white;
+		}
+	</style>
 </head>
 
 <body onload="showSection(2)">
@@ -134,7 +139,74 @@ switch (Auth::user()->id_role){
 			</nav>
 
 			<section class="content" id="section0">
-                profile	
+                <h2>Votre profile</h2>
+				<?php 
+					$user = Auth::user();
+				?>
+				<form action={{'update/'.$user->id}} method="post">
+					@csrf
+					<div class="row">
+						<div class="col-md-6 my-2">
+							<div class="d-flex flex-column">
+								<label class="form-label fw-bold">Nom</label>
+								<input class="form-control" type="text" name="name" value={{$user->name}}>
+							</div>
+						</div>
+						<div class="col-md-6 my-2">
+							<div class="d-flex flex-column">
+								<label class="form-label fw-bold">Email</label>
+								<input class="form-control" type="text" name="email" value={{$user->email}}>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 my-2">
+							<div class="d-flex flex-column">
+								<label class="form-label fw-bold">Registre Sociale</label>
+								<input class="form-control" type="text" name="rs" value={{$user->rs}}>
+							</div>
+						</div>
+						<div class="col-md-6 my-2">
+							<div class="d-flex flex-column">
+								<label class="form-label fw-bold">Registre Commerce</label>
+								<input class="form-control" type="text" name="rc" value={{$user->rc}}>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 my-2">
+							<div class="d-flex flex-column">
+								<label class="form-label fw-bold">ICE</label>
+								<input class="form-control" type="text" name="ice" value={{$user->ice}}>
+							</div>
+						</div>
+						<div class="col-md-6 my-2">
+							<div class="d-flex flex-column">
+								<label class="form-label fw-bold">Ville</label>
+								<input class="form-control" type="text" name="ville" value={{$user->ville}}>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 my-2">
+							<div class="d-flex flex-column">
+								<label class="form-label fw-bold">Forme Juridique</label>
+								<input class="form-control" type="text" name="fj" value={{$user->fj}}>
+							</div>
+						</div>
+						<div class="col-md-6 my-2">
+							<div class="d-flex flex-column">
+								<label class="form-label fw-bold">Mot de passe</label>
+								<input class="form-control" type="text" name="password">
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-2 my-2">
+							<button type="submit" class="btn btn-success">Modifier</button>
+						</div>
+					</div>
+				</form>
 			</section>
 
 			<section class="content" id="section1" style="display:none;">
@@ -177,12 +249,15 @@ switch (Auth::user()->id_role){
                     <div class="row border-top border-3 border-secondary pt-4">
 						<h2>Calcul I0 : </h2>
                         <div class="col-md-6 form-group">
-                            <label for="formGroupExampleInput">Date d'ouverture : </label>
+                            <label for="formGroupExampleInput">Date d ouverture : </label>
                             <input type="date" name="dateOuverture" id="dateOuverture" class="form-control" id="formGroupExampleInput" placeholder="Example input">
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="formGroupExampleInput2">Index de base : </label>
                             <select class="form-select" id="indexBase" aria-label="Floating label select example" name="indexBase">
+								<?php 
+									$bats = DB::table('bats')->get();
+								?>
                                 @foreach ($bats as $bat)
                                 	<option value="{{$bat->id}}">{{$bat->btp}}</option>
                                 @endforeach
@@ -583,7 +658,37 @@ switch (Auth::user()->id_role){
 
 			
 			<section class="content" id="section2" style="display:none;">
-            historique
+             	<h2>Historique des operations</h2>
+				<table class="table shadow">
+					<thead>
+						<tr>
+							<th scope="col">Objet du marché</th>
+							<th scope="col">Mettre d ouvrage</th>
+							<th scope="col">Numéro du marche</th>
+							<th scope="col">Supprimer</th>
+							<th scope="col">Imprimer</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach($data as $items)
+							<tr>
+								<td>{{$items->nomMarche}}</td>
+								<td>{{$items->numMarche}}</td>
+								<td>{{$items->lo}}</td>
+								<td>
+									<a href={{"delete/".$items->id}}>
+									<i class="fa-solid fa-trash"></i>
+									</a>
+								</td>
+								<td>
+									<a href={{"imprimer/".$items->id}}>
+										<i class="fa-solid fa-print"></i>
+									</a>
+								</td>
+							</tr>
+						@endforeach
+					</tbody>
+				</table>
 			</section>
 
 
@@ -692,7 +797,77 @@ switch (Auth::user()->id_role){
 			</nav>
 
 			<section class="content" id="section0">
-                profile	
+                <h2>Votre profile</h2>
+				<?php 
+					$user = Auth::user();
+				?>
+				<form action={{'update/'.$user->id}} method="post">
+					@csrf
+					<div class="row">
+						<div class="col-md-6 my-2">
+							<div class="d-flex flex-column">
+								<label class="form-label fw-bold">Nom</label>
+								<input class="form-control" type="text" name="name" value={{$user->name}}>
+							</div>
+						</div>
+						<div class="col-md-6 my-2">
+							<div class="d-flex flex-column">
+								<label class="form-label fw-bold">Email</label>
+								<input class="form-control" type="text" name="email" value={{$user->email}}>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 my-2">
+							<div class="d-flex flex-column">
+								<label class="form-label fw-bold">Registre Sociale</label>
+								<input class="form-control" type="text" name="rs" value={{$user->rs}}>
+							</div>
+						</div>
+						<div class="col-md-6 my-2">
+							<div class="d-flex flex-column">
+								<label class="form-label fw-bold">Registre Commerce</label>
+								<input class="form-control" type="text" name="rc" value={{$user->rc}}>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 my-2">
+							<div class="d-flex flex-column">
+								<label class="form-label fw-bold">ICE</label>
+								<input class="form-control" type="text" name="ice" value={{$user->ice}}>
+							</div>
+						</div>
+						<div class="col-md-6 my-2">
+							<div class="d-flex flex-column">
+								<label class="form-label fw-bold">Ville</label>
+								<input class="form-control" type="text" name="ville" value={{$user->ville}}>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 my-2">
+							<div class="d-flex flex-column">
+								<label class="form-label fw-bold">Forme Juridique</label>
+								<input class="form-control" type="text" name="fj" value={{$user->fj}}>
+							</div>
+						</div>
+					</div>
+					<h3>Modifier votre mots de passe</h3>
+					<div class="row">
+						<div class="col-md-6 my-2">
+							<div class="d-flex flex-column">
+								<label class="form-label fw-bold">Mot de passe</label>
+								<input class="form-control" type="text" name="password">
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-2 my-2">
+							<button type="submit" class="btn btn-success">Modifier</button>
+						</div>
+					</div>
+				</form>
 			</section>
 
 			<section class="content" id="section1" style="display:none;">
@@ -718,6 +893,10 @@ switch (Auth::user()->id_role){
 									cursor:pointer ;
 								}
 							</style>
+							<?php
+							// Récupérez tous les utilisateurs
+							$users = \App\Models\User::all();
+							?>
 							@foreach ($users as $user)
 								<tr>
 									<td>{{ $user->id }}</td>

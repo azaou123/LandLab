@@ -13,6 +13,8 @@ use App\Models\operation;
 use App\Models\user;
 use App\Models\ordres_arret;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Illuminate\Support\Facades\DB;
+
 
 class ProfileController extends Controller
 {
@@ -32,7 +34,7 @@ class ProfileController extends Controller
     public function supprimer($id){
         return back()->with('success', 'Suppression Avec Succes.');
     }
-    public function suspendre($id){
+    public function suspendre($id){    
         return back()->with('success', 'Suspendu Avec Succes.');
     }
     public function userProfile($id){
@@ -135,6 +137,7 @@ class ProfileController extends Controller
     /**
      * Delete the user's account.
      */
+
     public function destroy(Request $request): RedirectResponse
     {
         $request->validateWithBag('userDeletion', [
@@ -151,5 +154,63 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+     public function show()
+    {
+            // Récupérez l'utilisateur connecté
+            $utilisateurConnecte = Auth::user();
+
+            // Vérifiez s'il y a un utilisateur connecté
+            if ($utilisateurConnecte) {
+                // Sélectionnez toutes les lignes de votre table où id_user est égal à l'ID de l'utilisateur connecté
+                $data = operation::where('id_user', $utilisateurConnecte->id)->get();
+
+                // Faites quelque chose avec les données, comme les renvoyer à une vue
+                return view('dashboard')->with('data', $data);
+            } else {
+                // Gérez le cas où aucun utilisateur n'est connecté
+                // Vous pouvez rediriger vers une page de connexion ou afficher un message d'erreur
+                return redirect()->route('login')->with('message', 'Vous devez vous connecter pour accéder à ces données.');
+            }
+    }
+    public function delete($id){
+        $data=DB::table('operations')->where('id', $id)->delete();
+        return redirect('/dashboard');
+    }
+    public function modifier(Request $request, $id)
+    {
+        // Validez les données du formulaire
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'rs' => 'string|max:255',
+            'rc' => 'string|max:255',
+            'ice' => 'string|max:255',
+            'ville' => 'string|max:255',
+            'fj' => 'string|max:255',
+            'password' => 'nullable|string|min:6|confirmed',
+        ]);
+
+        // Récupérez l'utilisateur à mettre à jour en utilisant l'ID
+        $user = User::findOrFail($id);
+        dd($user);
+
+        // Mettez à jour les données du profil de l'utilisateur
+        $user->name = $validatedData['name'];
+        $user->email = $validatedData['email'];
+        $user->rs = $validatedData['rs'];
+        $user->rc = $validatedData['rc'];
+        $user->ice = $validatedData['ice'];
+        $user->ville = $validatedData['ville'];
+        $user->fj = $validatedData['fj'];
+
+        // Mettez à jour le mot de passe si fourni
+        if ($validatedData['password']) {
+            $user->password = bcrypt($validatedData['password']);
+        }
+
+        $user->save();
+
+        return view('dashboard', compact('user'))->with('success', 'Profil mis à jour avec succès.');
     }
 }
