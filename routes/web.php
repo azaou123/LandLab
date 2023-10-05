@@ -24,6 +24,7 @@ Route::get('/imprimer/{id}', [ProfileController::class, 'imprimer'])->name('impr
 Route::get('/supprimer/{id}', [ProfileController::class, 'supprimer'])->name('supprimer');
 Route::get('/suspendre/{id}', [ProfileController::class, 'suspendre'])->name('suspendre');
 Route::get('/userProfile/{id}', [ProfileController::class, 'userProfile'])->name('userProfile');
+Route::post('/addJours/', [ProfileController::class, 'addJours'])->name('addJours');
 Route::post('/envoyer', [ProfileController::class, 'envoyer'])->name('envoyer');
 Route::post('/upload', [ProfileController::class, 'upload'])->name('upload');
 Route::get('/dashboard', [ProfileController::class, 'show']);

@@ -12,6 +12,7 @@ use App\Models\bat;
 use App\Models\operation;
 use App\Models\user;
 use App\Models\ordres_arret;
+use App\Models\jours_ferrie;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\DB;
 
@@ -22,7 +23,8 @@ class ProfileController extends Controller
         $bats = bat::all();
         $users = user::all();
         $operations = operation::all();
-        return view('dashboard',compact('bats','users','operations'));
+        $jours = jours_ferrie::all();
+        return view('dashboard',compact('bats','users','operations','jours'));
     }
 
     public function imprimer($id){
@@ -77,6 +79,14 @@ class ProfileController extends Controller
         }
         
         return back()->with('success', 'Operation created successfully.');
+    }
+
+
+    public function addJours(Request $request){
+        jours_ferrie::create([
+            'jour' => $request->jour,
+        ]);
+        return back()->with('success', 'Ajouté Avec Succès.');
     }
 
 

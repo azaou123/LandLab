@@ -169,11 +169,14 @@ function monthsAndIntervalsBetweenDatesWithoutInterruptions($dateA, $dateB, $int
         </div>
         <div class="row">
             <p class="col-md-5">Index de base
-                @foreach ($bats as $bat)
-                    @if ($bat->id == $operation->id_bat)
-                         {{$bat->btp}} : {{$bat->i0}}</p>
-                    @endif
-                @endforeach
+                <?php foreach($bats as $bat){
+                    if ($bat->id == $operation->id_bat){
+                        $batOriginal = $bat->i0;
+                        echo $bat->btp. ' : '.$bat->i0 ; ?> </p> 
+                        <?php
+                    }
+                }
+                ?>
             </p>
                 <table class="table col-md-7 border border-top">
                 <style>
@@ -224,10 +227,6 @@ function monthsAndIntervalsBetweenDatesWithoutInterruptions($dateA, $dateB, $int
                     <td>P/PO</td>
                     <td>Coef</td>
                     <td>Montant révision</td>
-                </tr>
-                <tr>
-                    <th rowspan="6">DP N^1</th>
-                    <td rowspan="6">01/02/2021</td>
                 </tr>
                 <?php
                     function retourneI0($date,$bats) {
@@ -290,7 +289,6 @@ function monthsAndIntervalsBetweenDatesWithoutInterruptions($dateA, $dateB, $int
                             return null;
                         }
                     }
-
                     function transformDate($inputDate) {
                         $inputYear = date("Y"); // Get the current year
                         $monthMap = [
@@ -313,65 +311,37 @@ function monthsAndIntervalsBetweenDatesWithoutInterruptions($dateA, $dateB, $int
                         return $transformedDate;
                     }
                     foreach ($intervals as $interval) {
-                        echo '<tr>';
-                        echo '<td>'.$interval['month'].'</td>';
-                        echo '<td>'.retourneI0(trim(transformDateFormat($interval['startDate'])),$bats).'</td>';
-                        echo '<td>'.getDayFromDate(trim(transformDateFormat($interval['startDate']))).'</td>';
-                        echo '<td>au</td>';
-                        echo '<td>'.getDayFromDate(trim(transformDateFormat($interval['endDate']))).'</td>';
                         $ntj += getDayFromDate(trim(transformDateFormat($interval['endDate']))) - getDayFromDate(trim(transformDateFormat($interval['startDate']))) + 1;
-                        echo '<td>' . (getDayFromDate(trim(transformDateFormat($interval['endDate']))) - getDayFromDate(trim(transformDateFormat($interval['startDate']))) + 1) . '</td>';
-                        if ($i==0){
-                            echo '<td rowspan="6">'.$operation->md.'</td>';
-                            echo '<td rowspan="6"></td>';
-                            echo '<td rowspan="6">'.$operation->md.'</td>';
+                    }
+                    foreach ($intervals as $interval) {
+                        echo '<tr>';
+                        if ($i == 0) {
+                            echo '<td rowspan="8">DP N^1</td>';
+                            echo '<td rowspan="8">01/02/2021</td>';
                         }
-                        $tmr += ($operation->md / $ntj)*(getDayFromDate(trim(transformDateFormat($interval['endDate']))) - getDayFromDate(trim(transformDateFormat($interval['startDate']))) + 1);
-                        echo '<td>'.($operation->md / $ntj)*(getDayFromDate(trim(transformDateFormat($interval['endDate']))) - getDayFromDate(trim(transformDateFormat($interval['startDate']))) + 1).'</td>';
-                        echo '<td>'.calculatePtoP0(retourneI0(trim(transformDateFormat(transformDate($interval['month']))),$bats),retourneI0(trim(transformDateFormat($interval['startDate'])),$bats)).'</td>';
-                        echo '<td>'.calculatePtoP0(retourneI0(trim(transformDateFormat(transformDate($interval['month']))),$bats),retourneI0(trim(transformDateFormat($interval['startDate'])),$bats))-1 .'</td>';
-                        echo '<td>'.(($operation->md / $ntj)*(getDayFromDate(trim(transformDateFormat($interval['endDate']))) - getDayFromDate(trim(transformDateFormat($interval['startDate']))) + 1)) * (calculatePtoP0(retourneI0(trim(transformDateFormat(transformDate($interval['month']))),$bats),retourneI0(trim(transformDateFormat($interval['startDate'])),$bats))-1).'</td>';
-                        $total1 += (($operation->md / $ntj)*(getDayFromDate(trim(transformDateFormat($interval['endDate']))) - getDayFromDate(trim(transformDateFormat($interval['startDate']))) + 1)) * (calculatePtoP0(retourneI0(trim(transformDateFormat(transformDate($interval['month']))),$bats),retourneI0(trim(transformDateFormat($interval['startDate'])),$bats))-1);
+                        echo '<td>' . $interval['month'] . '</td>';
+                        // Call functions and variables as needed
+                        echo '<td>' . retourneI0(trim(transformDateFormat($interval['startDate'])), $bats) . '</td>';
+                        echo '<td>' . getDayFromDate(trim(transformDateFormat($interval['startDate']))) . '</td>';
+                        echo '<td>au</td>';
+                        echo '<td>' . getDayFromDate(trim(transformDateFormat($interval['endDate']))) . '</td>';
+                        
+                        echo '<td>' . (getDayFromDate(trim(transformDateFormat($interval['endDate']))) - getDayFromDate(trim(transformDateFormat($interval['startDate']))) + 1) . '</td>';
+                        if ($i == 0) {
+                            echo '<td rowspan="8">' . $operation->md . '</td>';
+                            echo '<td rowspan="8"></td>';
+                            echo '<td rowspan="8">' . $operation->md . '</td>';
+                        }
+                        $tmr += ($operation->md / $ntj) * (getDayFromDate(trim(transformDateFormat($interval['endDate']))) - getDayFromDate(trim(transformDateFormat($interval['startDate']))) + 1);
+                        echo '<td>' . number_format( ($operation->md / $ntj) * (getDayFromDate(trim(transformDateFormat($interval['endDate']))) - getDayFromDate(trim(transformDateFormat($interval['startDate']))) + 1) ,2). '</td>';
+                        echo '<td>' . calculatePtoP0(retourneI0(trim(transformDateFormat(transformDate($interval['month']))), $bats), $batOriginal) . '</td>';
+                        echo '<td>' . (calculatePtoP0(retourneI0(trim(transformDateFormat(transformDate($interval['month']))), $bats),$batOriginal) - 1) . '</td>';
+                        echo '<td>' . (($operation->md / $ntj) * (calculatePtoP0(retourneI0(trim(transformDateFormat(transformDate($interval['month']))), $bats),$batOriginal) - 1)) . '</td>';
+                        $total1 += (($operation->md / $ntj) * (calculatePtoP0(retourneI0(trim(transformDateFormat(transformDate($interval['month']))), $bats),$batOriginal) - 1));
                         $i++;
                         echo '</tr>';
                     }
                 ?>
-                <!-- <tr>
-                    <td>Dec-20</td>
-                    <td>209.5</td>
-                    <td>25</td>
-                    <td>au</td>
-                    <td>30</td>
-                    <td>6</td>
-                    <td >8000,54</td>
-                    <td>0.99756348</td>
-                    <td>-0.00045</td>
-                    <td>-0.00045</td>
-                </tr>
-                <tr>
-                    <td>Janv-20</td>
-                    <td>209.5</td>
-                    <td>25</td>
-                    <td>au</td>
-                    <td>30</td>
-                    <td>6</td>
-                    <td >8000,54</td>
-                    <td>0.99756348</td>
-                    <td>-0.00045</td>
-                    <td>-0.00045</td>
-                </tr>
-                <tr>
-                    <td>Févr-20</td>
-                    <td>209.5</td>
-                    <td>25</td>
-                    <td>au</td>
-                    <td>30</td>
-                    <td>6</td>
-                    <td >8000,54</td>
-                    <td>0.99756348</td>
-                    <td>-0.00045</td>
-                    <td>-0.00045</td>
-                </tr> -->
                 <tr>
                     <td></td>
                     <td colspan="4">Nombre total de jours</td>
