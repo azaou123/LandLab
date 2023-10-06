@@ -11,6 +11,7 @@ class jours_ferrie extends Model
 
     protected $fillable = [
         'id',
+        'label',
         'jour',
     ];
 }

@@ -15,6 +15,7 @@ use App\Models\ordres_arret;
 use App\Models\jours_ferrie;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 
 class ProfileController extends Controller
@@ -34,10 +35,37 @@ class ProfileController extends Controller
         return view('imprimer',compact('operation','bats','arrets'));
     }
     public function supprimer($id){
-        return back()->with('success', 'Suppression Avec Succes.');
+        $recordToDelete = user::find($id);
+        if ($recordToDelete) {
+            $recordToDelete->id_role = 4;
+            $recordToDelete->save();
+            return back()->with('success', 'Supprimé Avec Succès');
+        } 
+        else {
+            return back()->with('error', "N'est Pas Trouvé!");
+        }
     }
     public function suspendre($id){    
-        return back()->with('success', 'Suspendu Avec Succes.');
+        $recordToDelete = user::find($id);
+        if ($recordToDelete) {
+            $recordToDelete->id_role = 3;
+            $recordToDelete->save();
+            return back()->with('success', 'Sunspendu Avec Succès');
+        } 
+        else {
+            return back()->with('error', "N'est Pas Trouvé!");
+        }
+    }
+    public function activer($id){    
+        $recordToDelete = user::find($id);
+        if ($recordToDelete) {
+            $recordToDelete->id_role = 2;
+            $recordToDelete->save();
+            return back()->with('success', 'Activation Avec Succès');
+        } 
+        else {
+            return back()->with('error', "N'est Pas Trouvé!");
+        }
     }
     public function userProfile($id){
         $user = user::where('id','=',$id)->first();
@@ -84,36 +112,44 @@ class ProfileController extends Controller
 
     public function addJours(Request $request){
         jours_ferrie::create([
+            'label' => $request->label,
             'jour' => $request->jour,
         ]);
         return back()->with('success', 'Ajouté Avec Succès.');
     }
 
 
+    public function deleteJour($id){
+        $recordToDelete = jours_ferrie::find($id);
+        if ($recordToDelete) {
+            $recordToDelete->delete();
+            return back()->with('success', 'Supprimé Avec Succès');
+        } 
+        else {
+            return back()->with('error', "N'est Pas Trouvé!");
+        }
+    }
 
     public function upload(Request $request)
     {
-        $request->validate([
-            'excel_file' => 'required|mimes:xls,xlsx',
-        ]);
-    
+        DB::table('bats')->truncate();
         $file = $request->file('excel_file');
-    
-        try {
-            $spreadsheet = IOFactory::load($file);
-            $worksheet = $spreadsheet->getActiveSheet();
-            $data = $worksheet->toArray(null, true, true, true);
-    
-            foreach ($data as $row) {
-                Bat::create([
-                    'DO' => $row['B'],
-                    'btp' => $row['C'],
-                    'i0' => $row['D'],
-                ]);
-            }
-            return back()->with('success', 'Data uploaded and inserted successfully.');
-        } catch (\Exception $e) {
-            return back()->with('fail', 'Something went wrong');
+        $spreadsheet = IOFactory::load($file);
+        $worksheet = $spreadsheet->getActiveSheet();
+        $data = $worksheet->toArray(null, true, true, true);
+        foreach (array_slice($data, 1) as $row) {
+            $b = new bat();
+            $b->DO =  $row['B'];
+            $b->btp =  $row['C'];
+            $b->i0 =  $row['D'];
+            $b->save();
+        }
+        $bats = bat::all();
+        if (count($bats)>0){
+            return back()->with('success','Opération Effectuée avec succès');
+        }
+        else {
+            return back()->with('fail',"Erreur : Soit table que vous avez inséré est vide ou bien le traitement n'avait pas terminé ! Merci de répéter!");
         }
     }
     
@@ -222,5 +258,13 @@ class ProfileController extends Controller
         $user->save();
 
         return view('dashboard', compact('user'))->with('success', 'Profil mis à jour avec succès.');
+    }
+
+
+    public function logoutPerform()
+    {
+        Session::flush();
+        Auth::logout();
+        return redirect('login');
     }
 }
