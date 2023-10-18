@@ -30,7 +30,7 @@ Route::post('/envoyer', [ProfileController::class, 'envoyer'])->name('envoyer');
 Route::post('/upload', [ProfileController::class, 'upload'])->name('upload');
 Route::get('/dashboard', [ProfileController::class, 'show']);
 Route::get('/delete/{id}',[ProfileController::class, 'delete']);
-Route::post('/update/{id}',[ProfileController::class, 'modifier']);
+Route::post('/update-profile', [ProfileController::class, 'modifier'])->name('update-profile');
 Route::get('/deleteJour/{id}',[ProfileController::class, 'deleteJour'])->name('deleteJour');
 
 Route::middleware('auth')->group(function () {

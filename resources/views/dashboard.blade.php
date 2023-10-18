@@ -16,13 +16,20 @@
 	<link rel="stylesheet" href="{{URL('css/style.css')}}">
 	<title>Land Lab </title>
 	<style>
-		table{
+		.info,table{
 			background-color:white;
 		}
 	</style>
 </head>
 
-<body onload="showSection(1)">
+<body 
+@if(session('goto'))
+	onload="showSection({{ session('goto') }})"
+@else
+onload="showSection(1)"
+@endif
+>
+
 <script>
 	// Trigger onchange event when the page is loaded
 	window.addEventListener('DOMContentLoaded', function() {
@@ -161,70 +168,102 @@ switch (Auth::user()->id_role){
 				<?php 
 					$user = Auth::user();
 				?>
-				<form action={{'update/'.$user->id}} method="post">
+				@if(session('success'))
+					<div class="alert alert-success .container my-4">
+						{{ session('success') }}
+					</div>
+				@endif
+				<form action="{{ route('update-profile') }}" method="post">
 					@csrf
-					<div class="row">
+					<input type="hidden" name="id" value="{{ $user->id }}">
+					 <div class="row">
 						<div class="col-md-6 my-2">
 							<div class="d-flex flex-column">
 								<label class="form-label fw-bold">Nom</label>
-								<input class="form-control" type="text" name="name" value={{$user->name}}>
+								<input class="form-control" type="text" name="name" value="{{ $user->name }}">
+								<span class="text-danger">@error('name') {{$message}} @enderror</span>
 							</div>
 						</div>
+						<div class="row">
+							<div class="col-md-6 my-2">
+								<div class="d-flex flex-column">
+									<label class="form-label fw-bold">Adresse Email</label>
+									<input class="form-control" type="email" name="email" value="{{ $user->email }}">
+									<span class="text-danger">@error('email') {{$message}} @enderror</span>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6 my-2">
+								<div class="d-flex flex-column">
+									<label class="form-label fw-bold">Raison sociale</label>
+									<input class="form-control" type="text" name="rs" value="{{ $user->rs }}">
+									<span class="text-danger">@error('rs') {{$message}} @enderror</span>
+								</div>
+							</div>
+						</div>
+						 <div class="row">
+							<div class="col-md-6 my-2">
+								<div class="d-flex flex-column">
+									<label class="form-label fw-bold">Numéro ICE</label>
+									<input class="form-control" type="text" name="ice" value="{{ $user->ice }}">
+									<span class="text-danger">@error('ice') {{$message}} @enderror</span>
+								</div>
+							</div>
+						</div>
+						<div class="row">
 						<div class="col-md-6 my-2">
 							<div class="d-flex flex-column">
-								<label class="form-label fw-bold">Email</label>
-								<input class="form-control" type="text" name="email" value={{$user->email}}>
+								<label class="form-label fw-bold">Raison sociale (RC)</label>
+								<input class="form-control" type="text" name="rc" value="{{ $user->rc }}">
+								<span class="text-danger">@error('rc') {{$message}} @enderror</span>
 							</div>
 						</div>
 					</div>
-					<div class="row">
-						<div class="col-md-6 my-2">
-							<div class="d-flex flex-column">
-								<label class="form-label fw-bold">Registre Sociale</label>
-								<input class="form-control" type="text" name="rs" value={{$user->rs}}>
+						<div class="row">
+							<div class="col-md-6 my-2">
+								<div class "d-flex flex-column">
+									<label class="form-label fw-bold">Ville</label>
+									<input class="form-control" type="text" name="ville" value="{{ $user->ville }}">
+									<span class="text-danger">@error('ville') {{$message}} @enderror</span>
+								</div>
 							</div>
 						</div>
-						<div class="col-md-6 my-2">
-							<div class="d-flex flex-column">
-								<label class="form-label fw-bold">Registre Commerce</label>
-								<input class="form-control" type="text" name="rc" value={{$user->rc}}>
+						<div class="row">
+							<div class="col-md-6 my-2">
+								<div class "d-flex flex-column">
+									<label class="form-label fw-bold">FJ</label>
+									<input class="form-control" type="text" name="fj" value="{{ $user->fj }}">
+									<span class="text-danger">@error('fj') {{$message}} @enderror</span>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-6 my-2">
-							<div class="d-flex flex-column">
-								<label class="form-label fw-bold">ICE</label>
-								<input class="form-control" type="text" name="ice" value={{$user->ice}}>
+						<div class="row">
+							<div class="col-md-6 my-2">
+								<div class="d-flex flex-column">
+									 <label for="password" class="form-label">Mot de passe :</label>
+                        			 <input type="password" class="form-control" id="password" name="password" autocomplete="new-password" placeholder="Entrer votre mot de passe">
+									<span class="text-danger">@error('password') {{$message}} @enderror</span>
+								</div>
 							</div>
 						</div>
-						<div class="col-md-6 my-2">
-							<div class="d-flex flex-column">
-								<label class="form-label fw-bold">Ville</label>
-								<input class="form-control" type="text" name="ville" value={{$user->ville}}>
+						 <!-- Confirm Password -->
+						 <div class="row">
+							<div class="col-md-6 my-2">
+								<div class="d-flex flex-column">
+									<label for="password_confirmation" class="form-label">Comfirmation de mot de passe :</label>
+									<input type="password" class="form-control" id="password_confirmation" name="password_confirmation" autocomplete="new-password" placeholder="Entrer votre comfirmation de mot de passe">
+									<span class="text-danger">@error('password') {{$message}} @enderror</span>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-6 my-2">
-							<div class="d-flex flex-column">
-								<label class="form-label fw-bold">Forme Juridique</label>
-								<input class="form-control" type="text" name="fj" value={{$user->fj}}>
+						<div class="row">
+							<div class="col-md-2 my-2">
+								<button type="submit" class="btn btn-success">Modifier</button>
 							</div>
 						</div>
-						<div class="col-md-6 my-2">
-							<div class="d-flex flex-column">
-								<label class="form-label fw-bold">Mot de passe</label>
-								<input class="form-control" type="text" name="password">
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-2 my-2">
-							<button type="submit" class="btn btn-success">Modifier</button>
-						</div>
-					</div>
-				</form>
+					</form>
+
 			</section>
 
 			<section class="content" id="section1" style="display:none;">
@@ -237,20 +276,20 @@ switch (Auth::user()->id_role){
 					@csrf
 					<!---------------------------------------- Bloc 0  ------------------------------------------->
 					<!-- General Info  -->
-					<div class="info mb-4">
+					<h2>Informations generale</h2>
+					<div class="info mb-4 p-4 shadow">
 						<input type="text" name="id_user" value="{{ Auth::user()->id }}" style="display:none;">
-						<h2>Informations generale</h2>
 						<div class="row">
 							<div class="col-md-6 my-2">
 								<div class="d-flex flex-column">
-									<label class="form-label fw-bold" for="">Lettre d'ouvrage' : </label>
-									<input class="form-control" type="text" name="lo" id="lo" placeholder="Lettre d'Ouvrage">
+									<label class="form-label fw-bold" for="">Mettre d'Ouvrage : </label>
+									<input class="form-control" type="text" name="lo" id="lo" placeholder="Mettre d'Ouvrage">
 								</div>
 							</div>
 							<div class="col-md-6 my-2">
 								<div class="d-flex flex-column">
 									<label class="form-label fw-bold" for="">Numéro du marché : </label>
-									<input class="form-control" type="number" name="numMarche" id="numMarche" placeholder="Entrer le numero du marché">
+									<input class="form-control" type="text" name="numMarche" id="numMarche" placeholder="Entrer le numero du marché">
 								</div>
 							</div>
 						</div>
@@ -264,10 +303,10 @@ switch (Auth::user()->id_role){
 						</div>
 					</div>
 					<!---------------------------------------- Bloc 1  ------------------------------------------->
-                    <div class="row border-top border-3 border-secondary pt-4">
-						<h2>Calcul I0 : </h2>
+					<h2>I°</h2>
+					<div class="info row p-4 shadow">
                         <div class="col-md-6 form-group">
-                            <label for="formGroupExampleInput">Date d ouverture : </label>
+                            <label for="formGroupExampleInput">Date d'Ouverture des Plis</label>
                             <input type="date" name="dateOuverture" id="dateOuverture" class="form-control" id="formGroupExampleInput" placeholder="Example input">
                         </div>
                         <div class="col-md-6 form-group">
@@ -292,7 +331,7 @@ switch (Auth::user()->id_role){
                     </div>
                     <div class="row my-5">
 						<div class="col-1"></div>
-                        <button class="col-5 btn btn-primary " onclick="afficheri0(event)">Afficher i0 </button>
+                        <button class="col-5 btn btn-success" onclick="afficheri0(event)">Afficher i0 </button>
                         <div class="col-6 fw-bold pt-2 text-center" id="i0" style="display:none;">i0</div>
                     </div>
                     <script>
@@ -440,13 +479,14 @@ switch (Auth::user()->id_role){
 							taskList.removeChild(taskList.childNodes[taskId]);
 						}
 					</script>
-					<div class="col-md-12 mt-2 border-top border-secondary border-3 py-2">
+					<h2>Calculer le nombre de jours totale</h2>
+					<div class="info col-md-12 mt-4 p-4 shadow">
 					<div class="my-1">
 						<label for="form-label my-4 fw-bold">Date de service : </label>
 						<input type="date" class="form-control mt-3" id="ds" name="ds" placeholder="Montant decontant" >
 						<input type="date" class="form-control mt-3" id="listeArrets" name="listeArrets" style="display:none;">
 					</div>
-						<h3>Veuillez Entrer lea arrets s'il y'a des arrtes : </h4>
+						<h3>Veilliez Entrer Ordre d'Arret : </h4>
 						<div class="input-group mb-1">
 							<div class="row">
 								<div class="col-md-5">
@@ -454,11 +494,11 @@ switch (Auth::user()->id_role){
 									<input type="date" class="form-control" id="stopDate" placeholder="Arret ">
 								</div>
 								<div class="col-md-5">
-									<span>Reprendre : </span>
-									<input type="date" class="form-control" id="resumeDate" placeholder="Reprendre ">
+									<span>Reprise : </span>
+									<input type="date" class="form-control" id="resumeDate" placeholder="Reprise ">
 								</div>
 								<div class="col-md-2 mt-3 py-1">
-									<span class="btn btn-primary" onclick="addTask()">+</span>
+									<span class="btn btn-success" onclick="addTask()">+</span>
 								</div>
 							</div> 
 						</div> 
@@ -466,16 +506,15 @@ switch (Auth::user()->id_role){
 							<div id="taskList" class="row"></div>
 						</ul>
 						<input type="hidden" type="text" name="listreferences" id="listreferences">
-					</div>
-
-					<div class="my-1">
-						<label for="form-label my-4 fw-bold">Date de décompte : </label>
-						<input type="date" class="form-control mt-3" id="dd" placeholder="Montant decontant"name="dd" >
+						<div class="my-1">
+							<label for="form-label my-4 fw-bold">Date de décompte : </label>
+							<input type="date" class="form-control mt-3" id="dd" placeholder="Montant decontant"name="dd" >
+						</div>
 					</div>
 
 					<script>
 					</script>
-					<button class="btn btn-success my-3" onclick="calculateOnDays(event)" id="calculateButton">NTJ</button>
+					<button class="btn btn-success my-3" onclick="calculateOnDays(event)" id="calculateButton">Nombre totale des jours</button>
 					<div class="textcenter">
 						<div class="alert alert-success" id="NTJ"></div>
 						<input type="number" style="display:none;" name="inputNTJ" id="inputNTJ">
@@ -545,6 +584,14 @@ switch (Auth::user()->id_role){
 								}
 								else {
 									const moroccanHolidays = [];
+									<?php
+										$jours = DB::table('jours_ferries')->get();
+										foreach($jours as $j){
+											?>
+											moroccanHolidays.push(<?php echo $j['jour']; ?>);
+											<?php
+										}
+									?>
 									function isMoroccanHoliday(dateStr) {
 										return moroccanHolidays.includes(dateStr);
 									}
@@ -605,16 +652,16 @@ switch (Auth::user()->id_role){
 							const selectedOption = indexBase.options[indexBase.selectedIndex];
 							const ib = selectedOption.textContent;
 							event.preventDefault();
-							var dateParts = DS.split('-'); // Split the string into an array
+							let dateParts = DS.split('-');
 							if (dateParts.length === 3) {
 								var month = dateParts[0];
 								var year = dateParts[1];
 								DS = year + '-' + month;
 							}
-							var bats = <?php echo json_encode($bats); ?>;
+							var bats = <?php echo json_encode($bats);?>;
 							var index = 0;
 							for (var i = 0; i < bats.length; i++) {
-								var dateParts = bats[i]['DO'].split('-');
+								var dateParts = bats[i].DO.split('-');
 								if (dateParts.length === 3) {
 									var month = dateParts[0];
 									var year = dateParts[1];
@@ -646,22 +693,25 @@ switch (Auth::user()->id_role){
 					}
 
 					</script>
-					<div class="border-top border-secondary border-3 my-4 py-3">
+					<h2>Calculer le montant de décompte</h2>
+					<div class="info p-4 shadow">
 						<div >
-							<label for="form-label my-4 fw-bold">Montant Décontant : </label>
-							<input type="text" class="form-control mt-3" id="md" name="md" placeholder="Montant decontant" >
+							<label for="form-label my-4 fw-bold">Montant décompte : </label>
+							<input type="text" class="form-control mt-3" id="md" name="md" placeholder="Montant décompte" >
 						</div>
 						<button class="btn btn-success my-3" onclick="calculer(event)">Calculer</button>
 						<div class="row mt-3">
-							<table >
-								<tr>
-									<td>MR :</td>
+							<table>
+								<tr class="my-2">
+									<td>Montant de la révision : </td>
 									<td><input id="mr" name="mr"></td>
-									<td>M.TVA :</td>
-									<td><input id="mtva" name="mtva"  ></td>
 								</tr>
-								<tr>
-									<td>MTRP.TTC :</td>
+								<tr class="my-2">
+									<td>TVA :</td>
+									<td><input id="mtva" name="mtva"></td>
+								</tr>
+								<tr class="my-2">
+									<td>MMontant de la Révision TTC : </td>
 									<td><input id="mtrp-ttc" name="mtrp-ttc" ></td>
 								</tr>
 							</table>
@@ -672,7 +722,7 @@ switch (Auth::user()->id_role){
 						<input type="text" id="trs" name="trs" style="display:none;">
 						<input type="text" id="mds" name="mds" style="display:none;">
 						<div class="col-3"></div>
-						<button type="submit" class="col-6 btn btn-success w-80 fw-bold">Imprimer</button>
+						<button type="submit" class="col-6 btn btn-success w-80 fw-bold mt-5">Imprimer</button>
 						<div class="col-3"></div>
 					</div>
 
@@ -696,14 +746,19 @@ switch (Auth::user()->id_role){
 						</tr>
 					</thead>
 					<tbody>
+						<?php 
+							$connect =  Auth::user();
+
+							$data = DB::table('operations')->select('*')->where('id_user', $connect->id)->get();
+						?>
 						@foreach($data as $items)
 							<tr>
 								<td>{{$items->nomMarche}}</td>
-								<td>{{$items->numMarche}}</td>
 								<td>{{$items->lo}}</td>
+								<td>{{$items->numMarche}}</td>
 								<td>
 									<a href={{"delete/".$items->id}}>
-									<i class="fa-solid fa-trash"></i>
+										<i class="fa-solid fa-trash"></i>
 									</a>
 								</td>
 								<td>
@@ -833,73 +888,101 @@ switch (Auth::user()->id_role){
 				<?php 
 					$user = Auth::user();
 				?>
-				<form action={{'update/'.$user->id}} method="post">
+				@if(session('success'))
+					<div class="alert alert-success .container my-4">
+						{{ session('success') }}
+					</div>
+				@endif
+				<form action="{{ route('update-profile') }}" method="post">
 					@csrf
-					<div class="row">
+					<input type="hidden" name="id" value="{{ $user->id }}">
+					 <div class="row">
 						<div class="col-md-6 my-2">
 							<div class="d-flex flex-column">
 								<label class="form-label fw-bold">Nom</label>
-								<input class="form-control" type="text" name="name" value={{$user->name}}>
+								<input class="form-control" type="text" name="name" value="{{ $user->name }}">
+								<span class="text-danger">@error('name') {{$message}} @enderror</span>
 							</div>
 						</div>
+						<div class="row">
+							<div class="col-md-6 my-2">
+								<div class="d-flex flex-column">
+									<label class="form-label fw-bold">Adresse Email</label>
+									<input class="form-control" type="email" name="email" value="{{ $user->email }}">
+									<span class="text-danger">@error('email') {{$message}} @enderror</span>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6 my-2">
+								<div class="d-flex flex-column">
+									<label class="form-label fw-bold">Raison sociale</label>
+									<input class="form-control" type="text" name="rs" value="{{ $user->rs }}">
+									<span class="text-danger">@error('rs') {{$message}} @enderror</span>
+								</div>
+							</div>
+						</div>
+						 <div class="row">
+							<div class="col-md-6 my-2">
+								<div class="d-flex flex-column">
+									<label class="form-label fw-bold">Numéro ICE</label>
+									<input class="form-control" type="text" name="ice" value="{{ $user->ice }}">
+									<span class="text-danger">@error('ice') {{$message}} @enderror</span>
+								</div>
+							</div>
+						</div>
+						<div class="row">
 						<div class="col-md-6 my-2">
 							<div class="d-flex flex-column">
-								<label class="form-label fw-bold">Email</label>
-								<input class="form-control" type="text" name="email" value={{$user->email}}>
+								<label class="form-label fw-bold">Raison sociale (RC)</label>
+								<input class="form-control" type="text" name="rc" value="{{ $user->rc }}">
+								<span class="text-danger">@error('rc') {{$message}} @enderror</span>
 							</div>
 						</div>
 					</div>
-					<div class="row">
-						<div class="col-md-6 my-2">
-							<div class="d-flex flex-column">
-								<label class="form-label fw-bold">Registre Sociale</label>
-								<input class="form-control" type="text" name="rs" value={{$user->rs}}>
+						<div class="row">
+							<div class="col-md-6 my-2">
+								<div class "d-flex flex-column">
+									<label class="form-label fw-bold">Ville</label>
+									<input class="form-control" type="text" name="ville" value="{{ $user->ville }}">
+									<span class="text-danger">@error('ville') {{$message}} @enderror</span>
+								</div>
 							</div>
 						</div>
-						<div class="col-md-6 my-2">
-							<div class="d-flex flex-column">
-								<label class="form-label fw-bold">Registre Commerce</label>
-								<input class="form-control" type="text" name="rc" value={{$user->rc}}>
+						<div class="row">
+							<div class="col-md-6 my-2">
+								<div class "d-flex flex-column">
+									<label class="form-label fw-bold">FJ</label>
+									<input class="form-control" type="text" name="fj" value="{{ $user->fj }}">
+									<span class="text-danger">@error('fj') {{$message}} @enderror</span>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-6 my-2">
-							<div class="d-flex flex-column">
-								<label class="form-label fw-bold">ICE</label>
-								<input class="form-control" type="text" name="ice" value={{$user->ice}}>
+						<div class="row">
+							<div class="col-md-6 my-2">
+								<div class="d-flex flex-column">
+									 <label for="password" class="form-label">Password :</label>
+                        			 <input type="password" class="form-control" id="password" name="password" autocomplete="new-password" placeholder="Entrer votre mot de passe">
+									<span class="text-danger">@error('password') {{$message}} @enderror</span>
+								</div>
 							</div>
 						</div>
-						<div class="col-md-6 my-2">
-							<div class="d-flex flex-column">
-								<label class="form-label fw-bold">Ville</label>
-								<input class="form-control" type="text" name="ville" value={{$user->ville}}>
+						 <!-- Confirm Password -->
+						 <div class="row">
+							<div class="col-md-6 my-2">
+								<div class="d-flex flex-column">
+									<label for="password_confirmation" class="form-label">Confirm Password :</label>
+									<input type="password" class="form-control" id="password_confirmation" name="password_confirmation" autocomplete="new-password" placeholder="Entrer votre comfirmation de mot de passe">
+									<span class="text-danger">@error('password') {{$message}} @enderror</span>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-6 my-2">
-							<div class="d-flex flex-column">
-								<label class="form-label fw-bold">Forme Juridique</label>
-								<input class="form-control" type="text" name="fj" value={{$user->fj}}>
+						<div class="row">
+							<div class="col-md-2 my-2">
+								<button type="submit" class="btn btn-success">Modifier</button>
 							</div>
 						</div>
-					</div>
-					<h3>Modifier votre mots de passe</h3>
-					<div class="row">
-						<div class="col-md-6 my-2">
-							<div class="d-flex flex-column">
-								<label class="form-label fw-bold">Mot de passe</label>
-								<input class="form-control" type="text" name="password">
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-2 my-2">
-							<button type="submit" class="btn btn-success">Modifier</button>
-						</div>
-					</div>
-				</form>
+					</form>
 			</section>
 
 			<section class="content" id="section1" style="display:none;">
@@ -940,7 +1023,7 @@ switch (Auth::user()->id_role){
 									?>
 											<i class="isHvered fa-solid fa-eye mx-1 fs-3 fw-bold text-success" data-bs-toggle="tooltip" data-bs-placement="top" title="Details" onclick="window.location='{{ route("userProfile", ["id" => $user->id]) }}'"></i>
 											<i class="isHvered fa-solid fa-trash mx-1 fs-3 fw-bold text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Supprimer cet utilisateur" onclick="window.location='{{ route("supprimer", ["id" => $user->id]) }}'"></i>
-											<i class="isHvered fa-solid fa-ban mx-1 fs-3 fw-bold text-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="Suspendre cet utilisateur" onclick="window.location='{{ route("suspendre", ["id" => $user->id]) }}'"></i>
+											<i class="isHvered fa-solid fa-ban mx-1 fs-3 fw-bold text-secondary" data-bs-toggle="tooltip"  data-bs-placement="top" title="Suspendre cet utilisateur" onclick="window.location='{{ route("suspendre", ["id" => $user->id]) }}'"></i>
 									<?php
 										}
 										else if ($user->id_role == 3){
@@ -975,8 +1058,8 @@ switch (Auth::user()->id_role){
 			
 			<section class="content" id="section2" style="display:none;">
 				<div class="row">
-					<h2>Instructions : </h2>
-					<p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Vitae pariatur repellendus magni ipsa, voluptatum ea dicta minima. Quia quaerat vitae inventore in eius unde sit aut, ut perferendis rem. Quod?</p>
+					<h2>les critères nécessaires  </h2>
+					<p style="background-color:white;" class="p-3 rounded shadow">Lors de l'envoi d'un fichier au format .xlsx contenant trois colonnes : DO (Date ouverture), et BTP, ainsi que l'ajout d'une colonne IO.</p>
 				</div>
 				@if(session('success'))
 					<div class="alert alert-success">
@@ -1056,9 +1139,20 @@ switch (Auth::user()->id_role){
 @php
 		break;
 	}
-	default : 
-		echo 'hello' ;
-		break;
+	default :
+		echo '<div style="height:100vh;" class="d-flex justify-content-center align-items-center">
+				<div style="background-color:white;"  class="suspend p-4 rounded shadow">
+						<h3 class="text-center">Votre compte est supendu</h3>
+						<p class="py-4">Pour reprendre votre activite sur le site , veullier contacter le support dans cette email</p>
+						<div class="d-flex align-items-center">
+							<a href="mailto:bonjour.aboubaker@gmail.com">Envoyer un e-mail</a>
+							<div class="d-grid mx-5">
+								<a href="' . url('/logoutPerform') . '" class="btn btn-success">Déconnexion</a>
+							</div>
+						</div>
+				</div>
+			</div>' ;
+	break;
 }
 @endphp
 

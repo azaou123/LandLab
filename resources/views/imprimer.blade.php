@@ -4,6 +4,8 @@
     <title>Message Template with Bootstrap</title>
     <!-- Add Bootstrap CSS and JavaScript links -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Style css -->
 </head>
 <body>
 
@@ -136,8 +138,11 @@ function monthsAndIntervalsBetweenDatesWithoutInterruptions($dateA, $dateB, $int
     @endphp
     <div class="container mt-5">
         <div class="row">
-            <div class="col-10"><p>Commune Asni</p></div>
-            <div class="col-2"><button class="btn btn-success" id="btnImprimer" onclick="imprimer()">Imprimer</button></div>
+            <div class="col-10">
+                <p>{{$operation->lo}}</p>
+                <a class="btn btn-success rounded-circle" href="/dashboard"><i class="fa-solid fa-arrow-left"></i></a>
+            </div>
+            <div class="col-2"><button class="btn btn-success rounded" id="btnImprimer" onclick="imprimer()">Imprimer</button></div>
         </div>
         <style>
             @media print {
@@ -157,7 +162,7 @@ function monthsAndIntervalsBetweenDatesWithoutInterruptions($dateA, $dateB, $int
         </script>
         <p class="text-center ">
             <strong>Note de Calcul : relative à la révision des prix</strong><br>
-            traveaux d'amenagements de l'assainissement liquide de l'abattoir communal, marche num : {{ $operation->numMarche }}
+            {{ $operation->nomMarche }}, marche num : {{ $operation->numMarche }}
         </p>
         <div class="row">
             <div class="col-md-6">
@@ -172,13 +177,14 @@ function monthsAndIntervalsBetweenDatesWithoutInterruptions($dateA, $dateB, $int
                 <?php foreach($bats as $bat){
                     if ($bat->id == $operation->id_bat){
                         $batOriginal = $bat->i0;
+                        $btpbatOriginal = $bat->btp;
                         echo $bat->btp. ' : '.$bat->i0 ; ?> </p> 
                         <?php
                     }
                 }
                 ?>
             </p>
-                <table class="table col-md-7 border border-top">
+            <table class="table col-md-7 border border-top">
                 <style>
                     .empty-cell {
                         border:1px solid black ;
@@ -203,7 +209,12 @@ function monthsAndIntervalsBetweenDatesWithoutInterruptions($dateA, $dateB, $int
             <div class="col-md-5">Date de traveaux : {{ $operation->DO }}</div>
             <div class="col-md-7">Formule de révision : P=P0*[0,15+0,58,BAT6/BAT6 0]</div>
         </div>
-        <table class="table table-bordered">
+        <style>
+            td{
+                padding:5px;
+            }
+        </style>
+        <table class="table-bordered">
             <thead>
                 <tr>
                 <th colspan="2">Décomptes</th>
@@ -229,7 +240,16 @@ function monthsAndIntervalsBetweenDatesWithoutInterruptions($dateA, $dateB, $int
                     <td>Montant révision</td>
                 </tr>
                 <?php
-                    function retourneI0($date,$bats) {
+
+                    function lastID($bats,$btp){
+                        for ($i = count($bats) - 1; $i >= 0; $i--) {
+                            if ($bats[$i]['btp'] == $btp) {
+                                return $i;
+                            }
+                        }
+                        return -1;
+                    }
+                    function retourneI0($date,$bats,$btpbatOriginal) {
                         $dateParts = explode('-', $date);
                         if (count($dateParts) === 3) {
                             $month = $dateParts[0];
@@ -243,13 +263,24 @@ function monthsAndIntervalsBetweenDatesWithoutInterruptions($dateA, $dateB, $int
                                 $month = $dateParts[0];
                                 $year = $dateParts[1];
                                 $newDO = $year . '-' . $month;
-                                if ($newDO === $DO) {
+                                if ($newDO === $DO && $bat['btp']==$btpbatOriginal) {
+                                    $index = 1 ;
                                     return $bat['i0'];
                                 }
                             }
                         }
-                        return 'N existe Pas ! ';
+                        if ($index==0){
+                            foreach ($bats as $bat) {
+                                if ($bat['btp']==$btpbatOriginal) {
+                                    return $bats[lastID($bats,$bat['btp'])]['i0'];
+                                }
+                            }
+                        }
+
+                        
+                        return "N'existe pas !";
                     }
+
                     function formatDate($inputDate) {
                         $dateTime = DateTime::createFromFormat('Y-m-d', $inputDate);
                         if ($dateTime === false) {
@@ -313,31 +344,32 @@ function monthsAndIntervalsBetweenDatesWithoutInterruptions($dateA, $dateB, $int
                     foreach ($intervals as $interval) {
                         $ntj += getDayFromDate(trim(transformDateFormat($interval['endDate']))) - getDayFromDate(trim(transformDateFormat($interval['startDate']))) + 1;
                     }
+                    $ntIntervals = count($intervals)+1;
                     foreach ($intervals as $interval) {
                         echo '<tr>';
                         if ($i == 0) {
-                            echo '<td rowspan="8">DP N^1</td>';
-                            echo '<td rowspan="8">01/02/2021</td>';
+                            echo '<td rowspan="13">DP N°' .$operation->id . '</td>';
+                            echo '<td rowspan="13">' . $operation->DD . '</td>';
                         }
                         echo '<td>' . $interval['month'] . '</td>';
                         // Call functions and variables as needed
-                        echo '<td>' . retourneI0(trim(transformDateFormat($interval['startDate'])), $bats) . '</td>';
+                        echo '<td>' . retourneI0(trim(transformDateFormat($interval['startDate'])), $bats, $btpbatOriginal) . '</td>';
                         echo '<td>' . getDayFromDate(trim(transformDateFormat($interval['startDate']))) . '</td>';
                         echo '<td>au</td>';
                         echo '<td>' . getDayFromDate(trim(transformDateFormat($interval['endDate']))) . '</td>';
                         
                         echo '<td>' . (getDayFromDate(trim(transformDateFormat($interval['endDate']))) - getDayFromDate(trim(transformDateFormat($interval['startDate']))) + 1) . '</td>';
                         if ($i == 0) {
-                            echo '<td rowspan="8">' . $operation->md . '</td>';
-                            echo '<td rowspan="8"></td>';
-                            echo '<td rowspan="8">' . $operation->md . '</td>';
+                            echo '<td rowspan="'.$ntIntervals.'">' . $operation->md . '</td>';
+                            echo '<td rowspan="'.$ntIntervals.'"></td>';
+                            echo '<td rowspan="'.$ntIntervals.'">' . $operation->md . '</td>';
                         }
                         $tmr += ($operation->md / $ntj) * (getDayFromDate(trim(transformDateFormat($interval['endDate']))) - getDayFromDate(trim(transformDateFormat($interval['startDate']))) + 1);
                         echo '<td>' . number_format( ($operation->md / $ntj) * (getDayFromDate(trim(transformDateFormat($interval['endDate']))) - getDayFromDate(trim(transformDateFormat($interval['startDate']))) + 1) ,2). '</td>';
-                        echo '<td>' . calculatePtoP0(retourneI0(trim(transformDateFormat(transformDate($interval['month']))), $bats), $batOriginal) . '</td>';
-                        echo '<td>' . (calculatePtoP0(retourneI0(trim(transformDateFormat(transformDate($interval['month']))), $bats),$batOriginal) - 1) . '</td>';
-                        echo '<td>' . (($operation->md / $ntj) * (calculatePtoP0(retourneI0(trim(transformDateFormat(transformDate($interval['month']))), $bats),$batOriginal) - 1)) . '</td>';
-                        $total1 += (($operation->md / $ntj) * (calculatePtoP0(retourneI0(trim(transformDateFormat(transformDate($interval['month']))), $bats),$batOriginal) - 1));
+                        echo '<td>' . calculatePtoP0(retourneI0(trim(transformDateFormat(transformDate($interval['month']))), $bats, $btpbatOriginal), $batOriginal) . '</td>';
+                        echo '<td>' . (calculatePtoP0(retourneI0(trim(transformDateFormat(transformDate($interval['month']))), $bats,$btpbatOriginal),$batOriginal) - 1) . '</td>';
+                        echo '<td>' . (($operation->md / $ntj) * (calculatePtoP0(retourneI0(trim(transformDateFormat(transformDate($interval['month']))), $bats, $btpbatOriginal),$batOriginal) - 1)) . '</td>';
+                        $total1 += (($operation->md / $ntj) * (calculatePtoP0(retourneI0(trim(transformDateFormat(transformDate($interval['month']))), $bats, $btpbatOriginal),$batOriginal) - 1));
                         $i++;
                         echo '</tr>';
                     }

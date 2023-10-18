@@ -1,87 +1,149 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
-        @csrf
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+       <!-- Incluez les liens vers Bootstrap CSS et les scripts Bootstrap JavaScript ici -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{asset('css/form.css')}}" />
+</head>
+<body>
+    <div class="d-flex justify-content-start align-items-center position-fixed">
+        <img style="width:100px;margin:15px 0px 0px 40px;" src="{{asset('img/logo.jpeg')}}" alt="logo" />
+    </div>
+    <div class="inscription d-flex justify-content-center align-items-center">
+        <form class="p-4 rounded shadow" method="POST" action="{{ route('register') }}">
+            @csrf
 
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Nom complet : ')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
-        </div>
+            <div class="row mb-3">
+                <!-- Name -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Nom complet :</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" required autofocus autocomplete="name" placeholder="Entrer votre nom complet">
+                        @error('name')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
 
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+                <!-- Email Address -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email :</label>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required autocomplete="username" placeholder="Entrer votre email">
+                        @error('email')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+            </div>
 
-        <!-- Registre Social -->
-        <div class="mt-4">
-            <x-input-label for="rs" :value="__('Registre Social :')" />
-            <x-text-input id="rs" class="block mt-1 w-full" type="text" name="rs" :value="old('rs')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('rs')" class="mt-2" />
-        </div>
+            <!-- Registre Social and Registre Commerce in the same row -->
+            <div class="row mb-3">
+                <!-- Registre Social -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="rs" class="form-label">Raison Social :</label>
+                        <input type="text" class="form-control" id="rs" name="rs" value="{{ old('rs') }}" required autocomplete="username" placeholder="Entrer votre registre sociale">
+                        @error('rs')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
 
-        <!-- Registre Commerce -->
-        <div class="mt-4">
-            <x-input-label for="rc" :value="__('Registre Commerce :')" />
-            <x-text-input id="rc" class="block mt-1 w-full" type="text" name="rc" :value="old('rc')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('rc')" class="mt-2" />
-        </div>
 
-        <!-- ICE -->
-        <div class="mt-4">
-            <x-input-label for="ice" :value="__('ICE :')" />
-            <x-text-input id="ice" class="block mt-1 w-full" type="text" name="ice" :value="old('ice')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('ice')" class="mt-2" />
-        </div>
+                <!-- Registre Commerce -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="rc" class="form-label">Registre Commerce :</label>
+                        <input type="number" class="form-control" id="rc" name="rc" value="{{ old('rc') }}" required autocomplete="username" placeholder="Entrer votre registre de commerce">
+                        @error('rc')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+            </div>
 
-        <!-- Forme Juridique -->
-        <div class="mt-4">
-            <x-input-label for="fj" :value="__('Forme Juridique :')" />
-            <x-text-input id="fj" class="block mt-1 w-full" type="text" name="fj" :value="old('fj')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('fj')" class="mt-2" />
-        </div>
+            <!-- ICE and Forme Juridique in the same row -->
+            <div class="row mb-3">
+                <!-- ICE -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="ice" class="form-label">ICE :</label>
+                        <input type="number" class="form-control" id="ice" name="ice" value="{{ old('ice') }}" required autocomplete="username" placeholder="Entrer votre ice">
+                        @error('ice')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
 
-        <!-- Ville -->
-        <div class="mt-4">
-            <x-input-label for="ville" :value="__('Ville :')" />
-            <x-text-input id="ville" class="block mt-1 w-full" type="text" name="ville" :value="old('ville')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('ville')" class="mt-2" />
-        </div>
+                <!-- Forme Juridique -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="fj" class="form-label">Forme Juridique :</label>
+                        <select style="padding-bottom:3.5px;" class="form-control" id="fj" name="fj" required>
+                            <option value="" selected disabled>Sélectionnez une forme juridique</option>
+                            <option value="S A">S A</option>
+                            <option value="SARL">SARL</option>
+                            <option value="SARL AU">SARL AU</option>
+                            <option value="Association">Association</option>
+                            <option value="Cooperative">Cooperative</option>
+                            <option value="Auto Entrepreneur">Auto Entrepreneur</option>
+                            <!-- Ajoutez d'autres options au besoin -->
+                        </select>
+                        @error('fj')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+            </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+            <!-- Ville and Password in the same row -->
+            <div class="row mb-3">
+                <!-- Ville -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="ville" class="form-label">Ville :</label>
+                        <input type="text" class="form-control" id="ville" name="ville" value="{{ old('ville') }}" required autocomplete="username" placeholder="Entrer votre ville">
+                        @error('ville')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
+                <!-- Password -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password :</label>
+                        <input type="password" class="form-control" id="password" name="password" required autocomplete="new-password" placeholder="Entrer votre mot de passe">
+                        @error('password')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+            </div>
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
+            <!-- Confirm Password -->
+            <div class="mb-3">
+                <label for="password_confirmation" class="form-label">Confirm Password :</label>
+                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required autocomplete="new-password" placeholder="Entrer votre comfirmation de mot de passe">
+                @error('password_confirmation')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
+            </div>
 
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-success login">S'inscrire</button>
+                <a href="{{ route('login') }}" class="text-decoration-none">Déjà enregistré ?</a>
 
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
+            </div>
+        </form>
+    </div>
 
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
-
-            <x-primary-button class="ml-4">
-                {{ __('Register') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+    <!-- Incluez les scripts Bootstrap 5 JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.5.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

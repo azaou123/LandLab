@@ -39,7 +39,7 @@ class ProfileController extends Controller
         if ($recordToDelete) {
             $recordToDelete->id_role = 4;
             $recordToDelete->save();
-            return back()->with('success', 'Supprimé Avec Succès');
+            return back()->with('success', 'Supprimé Avec Succès')->with('goto',1);
         } 
         else {
             return back()->with('error', "N'est Pas Trouvé!");
@@ -50,7 +50,7 @@ class ProfileController extends Controller
         if ($recordToDelete) {
             $recordToDelete->id_role = 3;
             $recordToDelete->save();
-            return back()->with('success', 'Sunspendu Avec Succès');
+            return back()->with('success', 'Sunspendu Avec Succès')->with('goto',1);
         } 
         else {
             return back()->with('error', "N'est Pas Trouvé!");
@@ -61,7 +61,7 @@ class ProfileController extends Controller
         if ($recordToDelete) {
             $recordToDelete->id_role = 2;
             $recordToDelete->save();
-            return back()->with('success', 'Activation Avec Succès');
+            return back()->with('success', 'Activation Avec Succès')->with('goto',1);
         } 
         else {
             return back()->with('error', "N'est Pas Trouvé!");
@@ -106,7 +106,7 @@ class ProfileController extends Controller
             } 
         }
         
-        return back()->with('success', 'Operation created successfully.');
+        return $this->imprimer($operation->id);
     }
 
 
@@ -115,7 +115,7 @@ class ProfileController extends Controller
             'label' => $request->label,
             'jour' => $request->jour,
         ]);
-        return back()->with('success', 'Ajouté Avec Succès.');
+        return back()->with('success', 'Ajouté Avec Succès.')->with('goto',3);
     }
 
 
@@ -123,7 +123,7 @@ class ProfileController extends Controller
         $recordToDelete = jours_ferrie::find($id);
         if ($recordToDelete) {
             $recordToDelete->delete();
-            return back()->with('success', 'Supprimé Avec Succès');
+            return back()->with('success', 'Supprimé Avec Succès')->with('goto',3);
         } 
         else {
             return back()->with('error', "N'est Pas Trouvé!");
@@ -201,7 +201,7 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
-     public function show()
+    public function show()
     {
             // Récupérez l'utilisateur connecté
             $utilisateurConnecte = Auth::user();
@@ -221,14 +221,14 @@ class ProfileController extends Controller
     }
     public function delete($id){
         $data=DB::table('operations')->where('id', $id)->delete();
-        return redirect('/dashboard');
+        return back()->with('goto',2);
     }
-    public function modifier(Request $request, $id)
+    public function modifier(Request $request)
     {
         // Validez les données du formulaire
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id,
+            'email' => 'required|email|unique:users,email,' . $request->id,
             'rs' => 'string|max:255',
             'rc' => 'string|max:255',
             'ice' => 'string|max:255',
@@ -236,29 +236,30 @@ class ProfileController extends Controller
             'fj' => 'string|max:255',
             'password' => 'nullable|string|min:6|confirmed',
         ]);
-
-        // Récupérez l'utilisateur à mettre à jour en utilisant l'ID
-        $user = User::findOrFail($id);
-        dd($user);
-
-        // Mettez à jour les données du profil de l'utilisateur
-        $user->name = $validatedData['name'];
+    
+        // // Récupérez l'utilisateur à mettre à jour en utilisant l'ID
+        $user = User::findOrFail($request->id);
+    
+        // // Mettez à jour les données du profil de l'utilisateur
+        $user->name = $request->name;
         $user->email = $validatedData['email'];
         $user->rs = $validatedData['rs'];
         $user->rc = $validatedData['rc'];
         $user->ice = $validatedData['ice'];
         $user->ville = $validatedData['ville'];
         $user->fj = $validatedData['fj'];
-
+    
         // Mettez à jour le mot de passe si fourni
         if ($validatedData['password']) {
             $user->password = bcrypt($validatedData['password']);
         }
-
+    
         $user->save();
-
-        return view('dashboard', compact('user'))->with('success', 'Profil mis à jour avec succès.');
+    
+        return back()->with('success', 'Profil mis à jour avec succès.')->with('goto',0);
+        // echo 'hiiii';
     }
+    
 
 
     public function logoutPerform()

@@ -21,7 +21,9 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-md-2"></div>
+            <div class="col-md-2">
+                <a class="btn btn-success mt-5" href="/dashboard">Retoure</a>
+            </div>
             <div class="col-md-8">
                 <!-- User information and bio -->
                 <div class="profile-container">

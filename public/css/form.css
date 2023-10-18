@@ -1,0 +1,73 @@
+form{
+    width:50%;
+    background-color:white;
+}
+.content{
+    height:80vh;
+}
+body{
+    background-color:#F9F8FA;
+}
+.login{
+    width:100%;
+}
+.inscription{
+    margin-top:20px;
+}
+/* Ajoutez des styles personnalisés au besoin */
+
+/* Centrez le formulaire verticalement et horizontalement */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Style pour le formulaire */
+form {
+    max-width:700px;
+    width: 100%;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    margin:0px 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Ajoutez des styles pour les étiquettes, les champs de formulaire, les boutons, etc. */
+.form-label {
+    font-weight: bold;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+/* Ajoutez des styles pour gérer la mise en page sur les petits écrans */
+@media (max-width: 576px) {
+    .container {
+        padding: 0 15px;
+    }
+
+    form {
+        max-width:400px;
+    }
+}
