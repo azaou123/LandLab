@@ -347,16 +347,26 @@ switch (Auth::user()->id_role){
                                 var year = dateParts[1];
                                 DO = year + '-' + month;
                             }
-							var bats = <?php echo json_encode($bats); ?>;
+							const bats_i0 = [];
+							const bats_btp = [];
+							const bats_DO = [];
+							$bats = DB::table('bats')->get();
+							foreach($bats as $b){
+								?>
+									bats_i0.push(<?php echo $bats['i0']; ?>);
+									bats_btp.push(<?php echo $bats['btp']; ?>);
+									bats_DO.push(<?php echo $bats['DO']; ?>);
+								<?php
+							}
 							var index = 0;
-							for (var i = 0; i < bats.length; i++) {
-								var dateParts = bats[i]['DO'].split('-');
+							for (var i = 0; i < bats_btp.length; i++) {
+								var dateParts = bats_DO[i].split('-');
 								if (dateParts.length === 3) {
 									var month = dateParts[0];
 									var year = dateParts[1];
 									var newDO = year + '-' + month;
-									if (newDO === DO && bats[i]['btp'] === ib) {
-										document.getElementById('i0').innerHTML = '<span class="alert alert-success">' + bats[i]['i0'] + '</span>';
+									if (newDO === DO && bats_btp[i] === ib) {
+										document.getElementById('i0').innerHTML = '<span class="alert alert-success">' + bats_i0[i] + '</span>';
 										index = 1;
 									}
 								}
@@ -652,22 +662,32 @@ switch (Auth::user()->id_role){
 							const selectedOption = indexBase.options[indexBase.selectedIndex];
 							const ib = selectedOption.textContent;
 							event.preventDefault();
-							let dateParts = DS.split('-');
+							var dateParts = DS.split('-'); // Split the string into an array
 							if (dateParts.length === 3) {
 								var month = dateParts[0];
 								var year = dateParts[1];
 								DS = year + '-' + month;
 							}
-							var bats = <?php echo json_encode($bats);?>;
+							const bats_i0 = [];
+							const bats_btp = [];
+							const bats_DO = [];
+							$bats = DB::table('bats')->get();
+							foreach($bats as $b){
+								?>
+								bats_i0.push(<?php echo $bats['i0']; ?>);
+								bats_btp.push(<?php echo $bats['btp']; ?>);
+								bats_DO.push(<?php echo $bats['DO']; ?>);
+								<?php
+							}
 							var index = 0;
-							for (var i = 0; i < bats.length; i++) {
-								var dateParts = bats[i].DO.split('-');
+							for (var i = 0; i < bat_btp.length; i++) {
+								var dateParts = bats_DO[i].split('-');
 								if (dateParts.length === 3) {
 									var month = dateParts[0];
 									var year = dateParts[1];
 									var newDO = year + '-' + month;
-									if (newDO === DS && bats[i]['btp'] === ib) {
-										BAT = bats[i]['i0'];
+									if (newDO === DS && bats_btp[i] === ib) {
+										BAT = bats_i0[i];
 										index = 1;
 									}
 								}
@@ -691,6 +711,7 @@ switch (Auth::user()->id_role){
 							document.getElementById('mtrp-ttc').value = MTRP_TTC.toFixed(2);
 						}
 					}
+
 
 					</script>
 					<h2>Calculer le montant de décompte</h2>
