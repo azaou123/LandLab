@@ -136,10 +136,10 @@ function monthsAndIntervalsBetweenDatesWithoutInterruptions($dateA, $dateB, $int
             }
         }
     @endphp
-    <div class="container mt-5">
-        <div class="row">
+    <div class="mx-5 mt-5">
+        <div class="row ">
             <div class="col-10">
-                <p>{{$operation->lo}}</p>
+                <p style="width:30%;" class="empty-cell">{{$operation->lo}}</p>
                 <a class="btn btn-success rounded-circle" href="/dashboard"><i class="fa-solid fa-arrow-left"></i></a>
             </div>
             <div class="col-2"><button class="btn btn-success rounded" id="btnImprimer" onclick="imprimer()">Imprimer</button></div>
@@ -168,9 +168,17 @@ function monthsAndIntervalsBetweenDatesWithoutInterruptions($dateA, $dateB, $int
             <div class="col-md-6">
                 Date d'ouverture des plis : {{ $operation->DO }}
             </div>
-            <div class="col-md-6">
+            {{-- <div class="col-md-6">
                 Délai d'exécution : {{ $operation->ntj }} Jours
+            </div> --}}
+        </div>
+        <div class="row">
+            <div class="col-md-6 my-2">
+                Date ordre de service: {{ $operation->DS }}
             </div>
+            {{-- <div class="col-md-6">
+                Délai d'exécution : {{ $operation->ntj }} Jours
+            </div> --}}
         </div>
         <div class="row">
             <p class="col-md-5">Index de base
@@ -205,8 +213,8 @@ function monthsAndIntervalsBetweenDatesWithoutInterruptions($dateA, $dateB, $int
                 </tbody>
             </table>
         </div>
-        <div class="row text-center">
-            <div class="col-md-5">Date de traveaux : {{ $operation->DO }}</div>
+        <div class="row text-center pb-4">
+            <div class="col-md-3"></div>
             <div class="col-md-7">Formule de révision : P=P0*[0,15+0,58,BAT6/BAT6 0]</div>
         </div>
         <style>
@@ -348,7 +356,7 @@ function monthsAndIntervalsBetweenDatesWithoutInterruptions($dateA, $dateB, $int
                     foreach ($intervals as $interval) {
                         echo '<tr>';
                         if ($i == 0) {
-                            echo '<td rowspan="13">DP N°' .$operation->id . '</td>';
+                            echo '<td rowspan="13">DP N°' . 1 . '</td>';
                             echo '<td rowspan="13">' . $operation->DD . '</td>';
                         }
                         echo '<td>' . $interval['month'] . '</td>';

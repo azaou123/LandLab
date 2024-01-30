@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Connexion</title>
     <!-- Incluez les liens vers Bootstrap CSS et les scripts Bootstrap JavaScript ici -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="icon" type="image/x-icon" href="{{asset('img/calculatrice.png')}}" />
     <!-- CSS -->
     <link rel="stylesheet" href="{{asset('css/form.css')}}" />
 </head>
@@ -19,8 +21,8 @@
         @endif
         <div class="content d-flex justify-content-center align-items-center">
              <form class="p-4 rounded shadow" method="POST" action="{{ route('login') }}">
-                 <div class="d-flex justify-content-center align-items-center">
-                    <img style="width:100px;" src="{{asset('img/logo.jpeg')}}" alt="logo" />
+                 <div class="d-flex justify-content-center align-items-center py-2">
+                    <img style="width:200px;" src="{{asset('img/logo.png')}}" alt="logo" />
                 </div>
                 @csrf
 

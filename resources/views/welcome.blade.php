@@ -4,10 +4,11 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
+        <meta name="description" content="Faire votre note de calcule" />
         <meta name="author" content="" />
-        <title></title>
-        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <title>Faite votre note de calcule avec ma révision</title>
+        <link rel="icon" type="image/x-icon" href="{{asset('img/calculatrice.png')}}" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <!-- Bootstrap icons-->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
         <!-- Font awsome -->
@@ -19,13 +20,43 @@
         <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,400;1,400&amp;display=swap" rel="stylesheet" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="{{asset('css/welcome.css')}}" rel="stylesheet" />
+        <style>
+            .loading-gif {
+                max-width: 500px;
+            }
+
+            .pre-loader {
+                position: fixed;
+                z-index: 100; /** make sure this is the highest value compared to all other divs **/
+                top: 0;
+                left: 0;
+                background: #191f26;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+                width: 100%;
+            }
+
+            .pre-loader.hidden {
+                animation: fadeOut 2s; /** change to 1s */
+                animation-fill-mode: forwards;
+            }
+
+            @keyframes fadeOut {
+                100% {
+                    opacity: 0;
+                    visibility: hidden;
+                }
+            }
+        </style>
     </head>
     <body id="page-top">
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-light fixed-top shadow-sm" id="mainNav">
             <div class="container px-5">
                 <a class="navbar-brand fw-bold" href="/">
-                    <img style="width:40px;" src="{{asset('img/logo.jpeg')}}" alt="logo" />
+                    <img style="width:200px;" src="{{asset('img/logo.png')}}" alt="logo" />
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                     Menu
@@ -66,8 +97,8 @@
                     <div class="col-lg-6">
                         <!-- Mashead text and app badges-->
                         <div class="mb-5 mb-lg-0 text-center text-lg-start">
-                            <h1 class="title mb-3">Votre accompagnement dans les appels d'offres</h1>
-                            <p class="lead fw-normal text-muted">Vous avez terminer votre travaille et vous voulez faire votre note de calcul alors vous dans le bonne endroit </p>
+                            <h2 style="font-size:38px;" class="title mb-3">Votre outil pour le calcul et la gestion des révisions des Prix</h2>
+                            <p class="lead fw-normal text-muted">Pour garantir l’équilibre économique entre acheteurs public et titulaires des marchés public , Et éviter les impacts des variations économiques pendant l’exécution du marché. </p>
                             <div class="d-flex flex-column flex-lg-row align-items-center">
                                 <a class="btn btn-success" href="/dashboard">Commencez maintenant</a>
                             </div>
@@ -155,21 +186,26 @@
             </div>
         </section>
         <!-- End section 5-->
+        <div class='pre-loader'>
+            <img class='loading-gif' alt='loading' src="https://media0.giphy.com/media/11FuEnXyGsXFba/source.gif"/>
+        </div>
         <!-- Strat Footer-->
         <footer class="bg-dark text-white py-4">
             <div class="container gx-5 align-items-center">
                 <div class="row">
                     <div class="col-md-4 ">
-                        <h5>À Propos de Nous</h5>
-                        <p>Votre texte de présentation de l'entreprise va ici.</p>
+                        <div class="d-flex justify-content-start align-items-center py-2">
+                    		<img style="width:200px;" src="{{asset('img/logo2.png')}}" alt="logo" />
+                		</div>
+                        <p>Bureau d’études techniques LandLab .</p>
                     </div>
                     <div class="col-md-4">
                         <div>
                             <h5>Contactez-nous</h5>
                             <address>
-                                <p><i class="bi bi-geo-alt"></i> Adresse, Ville, Pays</p>
-                                <p><i class="bi bi-telephone"></i> +123 456 789</p>
-                                <p><i class="bi bi-envelope"></i> <a href="mailto:bonjour.aboubaker@gmail.com" target="_blank">contact@example.com</a></p>
+                                <p><i class="bi bi-geo-alt"></i> Imm 172/N 2 Portes de Marrakech, Marrakech, Maroc</p>
+                                <p><i class="bi bi-telephone"></i> +212 5 25 01 35 61</p>
+                                <p><i class="bi bi-envelope"></i> <a href="mailto:landlab4@gmail.com" target="_blank">landlab4@gmail.com</a></p>
                             </address>
                         </div>
                     </div>
@@ -198,5 +234,11 @@
         <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
         <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+        <!-- js to hide preloader loading is done -->
+        <script type='text/javascript'>
+            window.addEventListener('load', function () {
+                document.querySelector('.pre-loader').className += ' hidden';
+            });
+        </script>
     </body>
 </html>

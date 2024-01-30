@@ -79,6 +79,11 @@ class ProfileController extends Controller
     }
 
     public function envoyer(Request $request){
+        // Vérifier si la requête est vide
+        if (empty($request->all())) {
+            return back()->withErrors(['error' => 'La requête est vide. Veuillez fournir des données valides.']);
+        }
+        
         $operation = Operation::create([
             'id_user' => $request->input('id_user'),
             'id_bat' => $request->input('indexBase'),
@@ -104,6 +109,9 @@ class ProfileController extends Controller
                     'OR' => $deuxdates[1],
                 ]);
             } 
+        }else{
+            // Retourner à la page précédente avec un message d'erreur si la liste de références est vide
+            return back()->withErrors(['error' => 'La liste de références est vide. Veuillez fournir des données valides.']);
         }
         
         return $this->imprimer($operation->id);

@@ -6,6 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="description" content="Responsive Admin &amp; Dashboard Template based on Bootstrap 5">
 	<meta name="author" content="AdminKit">
+	<link rel="icon" type="image/x-icon" href="{{asset('img/calculatrice.png')}}" />
 	<meta name="keywords" content="adminkit, bootstrap, bootstrap 5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
@@ -19,6 +20,34 @@
 		.info,table{
 			background-color:white;
 		}
+		 .loading-gif {
+            max-width: 500px;
+        }
+
+        .pre-loader {
+            position: fixed;
+            z-index: 100; /** make sure this is the highest value compared to all other divs **/
+            top: 0;
+            left: 0;
+            background: #191f26;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+        }
+
+        .pre-loader.hidden {
+            animation: fadeOut 2s; /** change to 1s */
+            animation-fill-mode: forwards;
+        }
+
+        @keyframes fadeOut {
+            100% {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
 	</style>
 </head>
 
@@ -94,8 +123,12 @@ switch (Auth::user()->id_role){
 <div class="wrapper">
 		<nav id="sidebar" class="sidebar js-sidebar">
 			<div class="sidebar-content js-simplebar">
-				<a class="sidebar-brand bg-success text-decoration-none">
-          			<span class="align-middle ">Land Lab</span>
+				<a class="sidebar-brand text-decoration-none  d-flex jsutify-content-center">
+          			<span class="align-middle d-flex align-items-center">
+ 						<div class="d-flex justify-content-center align-items-center py-2">
+                    		<img style="width:200px;" src="{{asset('img/logo2.png')}}" alt="logo" />
+                		</div>
+					</span>
         		</a>
 				<ul class="sidebar-nav">
 					<li class="sidebar-item" id="btnSection0" onclick="showSection(0)">
@@ -272,7 +305,7 @@ switch (Auth::user()->id_role){
 					{{ session('success') }}
 				</div>
 			@endif
-                <form action="{{route('envoyer')}}" method="POST"> 
+                   <form action="{{route('envoyer')}}" method="POST"> 
 					@csrf
 					<!---------------------------------------- Bloc 0  ------------------------------------------->
 					<!-- General Info  -->
@@ -283,13 +316,13 @@ switch (Auth::user()->id_role){
 							<div class="col-md-6 my-2">
 								<div class="d-flex flex-column">
 									<label class="form-label fw-bold" for="">Mettre d'Ouvrage : </label>
-									<input class="form-control" type="text" name="lo" id="lo" placeholder="Mettre d'Ouvrage">
+									<input class="form-control" type="text" name="lo" id="lo" placeholder="Mettre d'Ouvrage" required>
 								</div>
 							</div>
 							<div class="col-md-6 my-2">
 								<div class="d-flex flex-column">
 									<label class="form-label fw-bold" for="">Numéro du marché : </label>
-									<input class="form-control" type="text" name="numMarche" id="numMarche" placeholder="Entrer le numero du marché">
+									<input class="form-control" type="text" name="numMarche" id="numMarche" placeholder="Entrer le numero du marché" required>
 								</div>
 							</div>
 						</div>
@@ -297,7 +330,7 @@ switch (Auth::user()->id_role){
 							<div class="col-md-12 my-2">
 								<div class="d-flex flex-column">
 									<label class="form-label fw-bold" for="">Objet de marché : </label>
-									<textarea class="form-control" name="nomMarche" placeholder="Objet de marché : " id="floatingTextarea2" style="height: 70px"></textarea>
+									<textarea class="form-control" name="nomMarche" placeholder="Objet de marché : " id="floatingTextarea2" style="height: 70px" required></textarea>
 								</div>
 							</div>
 						</div>
@@ -307,11 +340,11 @@ switch (Auth::user()->id_role){
 					<div class="info row p-4 shadow">
                         <div class="col-md-6 form-group">
                             <label for="formGroupExampleInput">Date d'Ouverture des Plis</label>
-                            <input type="date" name="dateOuverture" id="dateOuverture" class="form-control" id="formGroupExampleInput" placeholder="Example input">
+                            <input type="date" name="dateOuverture" id="dateOuverture" class="form-control" id="formGroupExampleInput" placeholder="Example input" required>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="formGroupExampleInput2">Index de base : </label>
-                            <select class="form-select" id="indexBase" aria-label="Floating label select example" name="indexBase">
+                            <select class="form-select" id="indexBase" aria-label="Floating label select example" name="indexBase" required>
 							<?php
 								$bats = DB::table('bats')->get();
 								$i = 0;
@@ -331,33 +364,44 @@ switch (Auth::user()->id_role){
                     </div>
                     <div class="row my-5">
 						<div class="col-1"></div>
-                        <button class="col-5 btn btn-success" onclick="afficheri0(event)">Afficher i0 </button>
+                        <a class="col-5 btn btn-success"  onclick="afficheri0(event)">Afficher i0 </a>
                         <div class="col-6 fw-bold pt-2 text-center" id="i0" style="display:none;">i0</div>
                     </div>
+					
                     <script>
-                        function afficheri0(event){
-                            var DO = document.getElementById('dateOuverture').value ;
+						function afficheri0(event) {
+							event.preventDefault();
+
+							var DO = document.getElementById('dateOuverture').value;
 							const indexBase = document.getElementById('indexBase');
 							const selectedOption = indexBase.options[indexBase.selectedIndex];
 							const ib = selectedOption.textContent;
-                            event.preventDefault();
-                            var dateParts = DO.split('-');
-                            if (dateParts.length === 3) {
-                                var month = dateParts[0];
-                                var year = dateParts[1];
-                                DO = year + '-' + month;
-                            }
+
+
+							var dateParts = DO.split('-');
+							if (dateParts.length === 3) {
+								var month = dateParts[0]; // Changement ici pour récupérer le mois en tant que deuxième élément
+								var year = dateParts[1];  // Changement ici pour récupérer l'année en tant que premier élément
+								DO = year + '-' + month;
+							}
+
 							const bats_i0 = [];
 							const bats_btp = [];
 							const bats_DO = [];
+
+							// Remarque : le code PHP à l'intérieur de cette boucle doit être inclus dans votre fichier PHP.
+							<?php
 							$bats = DB::table('bats')->get();
-							foreach($bats as $b){
-								?>
-									bats_i0.push(<?php echo $bats['i0']; ?>);
-									bats_btp.push(<?php echo $bats['btp']; ?>);
-									bats_DO.push(<?php echo $bats['DO']; ?>);
-								<?php
+							foreach ($bats as $b) {
+							?>
+								bats_i0.push(<?php echo json_encode($b->i0); ?>);
+								bats_btp.push(<?php echo json_encode($b->btp); ?>);
+								bats_DO.push(<?php echo json_encode($b->DO); ?>);
+
+							<?php
 							}
+							?>
+
 							var index = 0;
 							for (var i = 0; i < bats_btp.length; i++) {
 								var dateParts = bats_DO[i].split('-');
@@ -486,14 +530,14 @@ switch (Auth::user()->id_role){
 							interruptions.splice(taskId, 1);
 							document.getElementById('listreferences').value = tasks.join(" | ");
 							const taskList = document.getElementById("taskList");
-							taskList.removeChild(taskList.childNodes[taskId]);
+							taskList.removeChild(taskList.childNodes[taskId - 1]);
 						}
 					</script>
 					<h2>Calculer le nombre de jours totale</h2>
 					<div class="info col-md-12 mt-4 p-4 shadow">
 					<div class="my-1">
 						<label for="form-label my-4 fw-bold">Date de service : </label>
-						<input type="date" class="form-control mt-3" id="ds" name="ds" placeholder="Montant decontant" >
+						<input type="date" class="form-control mt-3" id="ds" name="ds" placeholder="Montant decontant" required>
 						<input type="date" class="form-control mt-3" id="listeArrets" name="listeArrets" style="display:none;">
 					</div>
 						<h3>Veilliez Entrer Ordre d'Arret : </h4>
@@ -518,7 +562,7 @@ switch (Auth::user()->id_role){
 						<input type="hidden" type="text" name="listreferences" id="listreferences">
 						<div class="my-1">
 							<label for="form-label my-4 fw-bold">Date de décompte : </label>
-							<input type="date" class="form-control mt-3" id="dd" placeholder="Montant decontant"name="dd" >
+							<input type="date" class="form-control mt-3" id="dd" placeholder="Montant decontant"name="dd" required>
 						</div>
 					</div>
 
@@ -598,7 +642,7 @@ switch (Auth::user()->id_role){
 										$jours = DB::table('jours_ferries')->get();
 										foreach($jours as $j){
 											?>
-											moroccanHolidays.push(<?php echo $j['jour']; ?>);
+											moroccanHolidays.push(<?php echo $j->jour; ?>);
 											<?php
 										}
 									?>
@@ -671,16 +715,18 @@ switch (Auth::user()->id_role){
 							const bats_i0 = [];
 							const bats_btp = [];
 							const bats_DO = [];
+							<?php
 							$bats = DB::table('bats')->get();
 							foreach($bats as $b){
 								?>
-								bats_i0.push(<?php echo $bats['i0']; ?>);
-								bats_btp.push(<?php echo $bats['btp']; ?>);
-								bats_DO.push(<?php echo $bats['DO']; ?>);
+								bats_i0.push(<?php echo json_encode($b->i0); ?>);
+								bats_btp.push(<?php echo json_encode($b->btp); ?>);
+								bats_DO.push(<?php echo json_encode($b->DO); ?>);
 								<?php
 							}
+							?>
 							var index = 0;
-							for (var i = 0; i < bat_btp.length; i++) {
+							for (var i = 0; i < bats_btp.length; i++) {
 								var dateParts = bats_DO[i].split('-');
 								if (dateParts.length === 3) {
 									var month = dateParts[0];
@@ -718,7 +764,7 @@ switch (Auth::user()->id_role){
 					<div class="info p-4 shadow">
 						<div >
 							<label for="form-label my-4 fw-bold">Montant décompte : </label>
-							<input type="text" class="form-control mt-3" id="md" name="md" placeholder="Montant décompte" >
+							<input type="number" class="form-control mt-3" id="md" name="md" placeholder="Montant décompte" required>
 						</div>
 						<button class="btn btn-success my-3" onclick="calculer(event)">Calculer</button>
 						<div class="row mt-3">
@@ -747,10 +793,17 @@ switch (Auth::user()->id_role){
 						<div class="col-3"></div>
 					</div>
 
-
-                            
-                        
+   
                 </form>
+				@if ($errors->any())
+					<div class="alert alert-danger">
+						<ul>
+							@foreach ($errors->all() as $error)
+								<li>{{ $error }}</li>
+							@endforeach
+						</ul>
+					</div>
+				@endif
 	        </section>
 
 			
@@ -955,7 +1008,7 @@ switch (Auth::user()->id_role){
 						<div class="row">
 						<div class="col-md-6 my-2">
 							<div class="d-flex flex-column">
-								<label class="form-label fw-bold">Raison sociale (RC)</label>
+								<label class="form-label fw-bold">Register Commerce (RC)</label>
 								<input class="form-control" type="text" name="rc" value="{{ $user->rc }}">
 								<span class="text-danger">@error('rc') {{$message}} @enderror</span>
 							</div>
@@ -973,7 +1026,7 @@ switch (Auth::user()->id_role){
 						<div class="row">
 							<div class="col-md-6 my-2">
 								<div class "d-flex flex-column">
-									<label class="form-label fw-bold">FJ</label>
+									<label class="form-label fw-bold">Forme Juridique</label>
 									<input class="form-control" type="text" name="fj" value="{{ $user->fj }}">
 									<span class="text-danger">@error('fj') {{$message}} @enderror</span>
 								</div>
@@ -982,7 +1035,7 @@ switch (Auth::user()->id_role){
 						<div class="row">
 							<div class="col-md-6 my-2">
 								<div class="d-flex flex-column">
-									 <label for="password" class="form-label">Password :</label>
+									 <label for="password" class="form-label">Mot de passe :</label>
                         			 <input type="password" class="form-control" id="password" name="password" autocomplete="new-password" placeholder="Entrer votre mot de passe">
 									<span class="text-danger">@error('password') {{$message}} @enderror</span>
 								</div>
@@ -992,7 +1045,7 @@ switch (Auth::user()->id_role){
 						 <div class="row">
 							<div class="col-md-6 my-2">
 								<div class="d-flex flex-column">
-									<label for="password_confirmation" class="form-label">Confirm Password :</label>
+									<label for="password_confirmation" class="form-label">Confirmation du Mot de passe :</label>
 									<input type="password" class="form-control" id="password_confirmation" name="password_confirmation" autocomplete="new-password" placeholder="Entrer votre comfirmation de mot de passe">
 									<span class="text-danger">@error('password') {{$message}} @enderror</span>
 								</div>
@@ -1166,7 +1219,7 @@ switch (Auth::user()->id_role){
 						<h3 class="text-center">Votre compte est supendu</h3>
 						<p class="py-4">Pour reprendre votre activite sur le site , veullier contacter le support dans cette email</p>
 						<div class="d-flex align-items-center">
-							<a href="mailto:bonjour.aboubaker@gmail.com">Envoyer un e-mail</a>
+							<a href="mailto:landlab4@gmail.com">landlab4@gmail.com</a>
 							<div class="d-grid mx-5">
 								<a href="' . url('/logoutPerform') . '" class="btn btn-success">Déconnexion</a>
 							</div>
@@ -1200,7 +1253,9 @@ switch (Auth::user()->id_role){
 
 
 
-
+			  <div class='pre-loader'>
+				<img class='loading-gif' alt='loading' src="https://media0.giphy.com/media/11FuEnXyGsXFba/source.gif"/>
+			  </div>
 			  <!-- Bootstrap core JS-->
 			  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 				<!-- Core theme JS-->
@@ -1228,7 +1283,12 @@ switch (Auth::user()->id_role){
 	<script src="js/app.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-
+	<!-- js to hide preloader loading is done -->
+    <script type='text/javascript'>
+        window.addEventListener('load', function () {
+        document.querySelector('.pre-loader').className += ' hidden';
+    });
+    </script>
 </body>
 
 </html>

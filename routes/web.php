@@ -40,5 +40,4 @@ Route::middleware('auth')->group(function () {
     Route::get('/logoutPerform', [ProfileController::class, 'logoutPerform'])->name('logoutPerform');
 });
 
-
 require __DIR__.'/auth.php';
